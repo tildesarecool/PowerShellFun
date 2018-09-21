@@ -111,5 +111,79 @@ help *eventlog*
 # lead to 
 Write-EventLog
 # which has the right description to do this
-# 6) 
-
+# 6) all about aliases: create/modify/export/import aliases
+# i used my easy goto
+help *alias*
+# and got back a bunch of alias-related commands:
+Export-Alias # Exports information about currently defined aliases to a file.
+Get-Alias
+Import-Alias # imports from a file
+New-Alias
+Set-Alias # creates or changes an alias
+# Alias - whatever a "provider" is 
+# about_Aliases (help file)
+# these seem pretty self-explanatory
+# 
+# 7) a way to keep a "transcript" of everything typed in shell and save that to a file
+Start-Transcript # creates a record....
+Stop-Transcript # stops transcript...
+# 
+# 8) what would retreive only the last 100 security event log entries?
+Get-EventLog Security -Newest 100 # this will do it. I went over this on my own above
+# 
+# 9) way to retreive list of services installed on remote computer?
+help *service* # this actually didn't retreive what i thought i wanted
+# but since get-eventlog is a thing i tried 
+help get-ser # and it filled in the rest of service
+Get-Service # works
+# according to 
+help Get-Service
+# The Get-Service cmdlet gets objects that represent the services on a local computer or on a remote computer,
+# including running and stopped services.
+# looks like it's the same format as Get-EvenLog, although i assume on this network it will work about as well as that command
+# e.g. not at all
+# 10) way to retreive list of processes installed on remote computer?
+# as expected
+Get-Process # works same as the other Get-* so far have worked
+# 
+# 11) looking the help file for
+Out-File
+# what is the default character width and is there a way to change the character width?
+# Out-File is basically an alternative to using the redirect '>' with a bunch more optons
+# added on
+Get-Help Out-File -examples # this gives me a lot of information
+# I'm actually not sure from this what the default character width is but it looks like 
+# -Width 50
+# would limit it to 50 and that 50 is cutting off part of the output so i would say some value
+# more than 50 characters
+# 
+# 12) same premise as 11 but a question on avoiding over-writing an existing file
+# apparently -NoClobber is made to do exactly this
+# 
+# 13) how would you list all aliases defined in PS?
+Get-Alias # I think this about covers this actually
+# 
+# 14) using abbreviated parameter names and aliases what is shortest command line you could type
+# to retreive list of running processes from computer named "Server1"?
+# 
+gps # this is get process
+gps -Cn Server1 # i think this would work but i have no way to test it
+# 
+# 15) How many cmdlets are available that can deal with generic objects?
+# I tried
+help *object* # and it looks like either 9 or 11 depending if the two "about_" entries as "help files" count or not
+# 
+# 16) what help topic could explain more about arrays?
+Get-Help arrays # good place to start
+about_Arrays # seems to have a very extensive description of all things arrays
+# 
+#looking at answers...
+# well i didn't use the noun/verb specification or get the details like the answers did 
+# but at least i learned a lot
+# 
+# 
+# 
+# 
+# 
+# 
+# 
