@@ -21,7 +21,7 @@
 # 
 # parameter name aliases:
 # tricky to get them to list. example given for evenlog for computername:
-(Get-Command Get-EventLog | select -ExpandProperty parameters).computername.aliases
+#(Get-Command Get-EventLog | select -ExpandProperty parameters).computername.aliases
 # the above only outputs "Cn". apparently this shortcut isn't in the help or anything, just a thing you have to find. or something
 # 
 # 
