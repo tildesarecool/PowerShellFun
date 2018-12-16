@@ -113,7 +113,7 @@ Write-EventLog
 # which has the right description to do this
 # 6) all about aliases: create/modify/export/import aliases
 # i used my easy goto
-help *alias*
+# help *alias*
 # and got back a bunch of alias-related commands:
 Export-Alias # Exports information about currently defined aliases to a file.
 Get-Alias
