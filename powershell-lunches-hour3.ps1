@@ -24,7 +24,7 @@ Update-Help
 #retrieve the HelpInfo XML file for UI culture en-US. Make sure the HelpInfoUri property in the module manifest is
 #valid or check your network connection and then try the command again.
 #At line:1 char:1
-#+ Update-Help
+#+ Update-Help  
 #+ ~~~~~~~~~~~
 #    + CategoryInfo          : ResourceUnavailable: (:) [Update-Help], Exception
 #    + FullyQualifiedErrorId : UnableToRetrieveHelpInfoXml,Microsoft.PowerShell.Commands.UpdateHelpCommand
