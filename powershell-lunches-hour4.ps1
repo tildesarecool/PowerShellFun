@@ -3,7 +3,7 @@
 # chapter 4 at least looks like it's only about 12 pages
 # i'm sure they will be quite jam packed though
 # 
-# terms
+# terms  
 # 
 # cmdlet: native ps commandline utility. written in .net framework language such as c#. 
 # function: similar to cmdlet, but rather than being written in a .net language fucntions are written
