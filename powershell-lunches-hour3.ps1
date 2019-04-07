@@ -57,7 +57,7 @@ Get-EventLog System -ComputerName (redacted) -Newest 10
 # got error:
 # Get-EventLog : The network path was not found.
 # At line:1 char:1
-# + Get-EventLog System -computer SURGBVVJ6Y1 -Newest 10
+# + Get-EventLog System -computer (blank) -Newest 10
 # + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #     + CategoryInfo          : NotSpecified: (:) [Get-EventLog], IOException
 #     + FullyQualifiedErrorId : System.IO.IOException,Microsoft.PowerShell.Commands.GetEventLogCommand
@@ -140,7 +140,8 @@ Get-Service # works
 help Get-Service
 # The Get-Service cmdlet gets objects that represent the services on a local computer or on a remote computer,
 # including running and stopped services.
-# looks like it's the same format as Get-EvenLog, although i assume on this network it will work about as well as that command
+# looks like it's the same format as Get-EvenLog, although i assume on this network it will work about as well as 
+# that command
 # e.g. not at all
 # 10) way to retreive list of processes installed on remote computer?
 # as expected
@@ -155,7 +156,7 @@ Get-Help Out-File -examples # this gives me a lot of information
 # I'm actually not sure from this what the default character width is but it looks like 
 # -Width 50
 # would limit it to 50 and that 50 is cutting off part of the output so i would say some value
-# more than 50 characters
+# more than 50 characters (april 2019 edit: later in the book it mentions a default of 80 characters)
 # 
 # 12) same premise as 11 but a question on avoiding over-writing an existing file
 # apparently -NoClobber is made to do exactly this
