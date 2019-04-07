@@ -12,7 +12,8 @@
 # application: any kind of external executable such as ping or ipconfig
 # command: generic term for above terms
 # 
-# alias: note on ps alias versus bash/unix alias is that ps alias is only for the command not for any extra paramters sent to it
+# alias: note on ps alias versus bash/unix alias is that ps alias is only for the command 
+# not for any extra paramters sent to it
 # 
 # taking shortcuts with parameters:
 # 
@@ -22,7 +23,8 @@
 # parameter name aliases:
 # tricky to get them to list. example given for evenlog for computername:
 #(Get-Command Get-EventLog | select -ExpandProperty parameters).computername.aliases
-# the above only outputs "Cn". apparently this shortcut isn't in the help or anything, just a thing you have to find. or something
+# the above only outputs "Cn". apparently this shortcut isn't in the help or anything, 
+# just a thing you have to find. or something
 # 
 # 
 # using positional parameters:
@@ -40,7 +42,8 @@ Get-ChildItem -Path C:\Users
 Get-EventLog -LogName system -ComputerName . -Newest 10
 # this one also doesn't error but it also doesn't provide any output
 Get-EventLog -LogName system -ComputerName . -Newest 10 -UserName [redacted]
-# this one does though. guess i just had to provide the marshmed part. i am logged in as this login. no idea why it's necessary
+# this one does though. guess i just had to provide the (domain) part. i am logged in as this login. 
+# no idea why it's necessary
 Get-EventLog -LogName system -ComputerName . -Newest 10 -UserName [redacted]\[redacted]
 # ###########################################################################################
 # 
@@ -48,7 +51,7 @@ Get-EventLog -LogName system -ComputerName . -Newest 10 -UserName [redacted]\[re
 Show-Command
 # has something of a GUI (which it's noted doesn't work on gui-less windows servers)
 # to help walk through the commands 
-# it's actually pretty nice
+# it's actually pretty nice (pg. 45)
 # 
 # There's a mention of using the string --% for things that should be passed on directly to cmd.exe parser
 # but the examples cited are 
@@ -59,6 +62,7 @@ Show-Command
 # especially the kind not built in to cmd
 # STOP PARSING:  --%
 # 
+#
 # ###########################################################################################
 # The stop-parsing symbol (--%), introduced in Windows PowerShell 3.0,
 # directs Windows PowerShell to refrain from interpreting input as
@@ -86,19 +90,24 @@ Show-Command
 # Icacls  program:
 #     X:\VMS /grant Dom\HVAdmin:(CI)(OI)F
 # ###########################################################################################
+#
+# edit april 2019: i realized on my own that i could as easily run a command, like "sc", with:
+# cmd /c sc
+# that that would run the command and close afterwards
+# i just happened to have tried the sc command for a server related thing recently
+# apparently it does something else in PS. and the book discusses it too.
+# ###########################################################################################
 # 
+# (below is april 2019)
 # 
+# the book mentions "net use" as a "works good enough no need to replace example" for cmd commands
+# then proceeds to list the PS replacement for net use
+# or more specifically something of a generic command that could be used as a replacement
+# in the form of the 
+# New-PSDrive  command with -Persist parameter
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+# it also mentioned Test-Connection as an alternative to ping but as the book says
+# it doesn't seem like a long of advantage over regular ping
 # 
 # 
 # 
