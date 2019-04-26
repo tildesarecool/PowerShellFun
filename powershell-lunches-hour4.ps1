@@ -85,7 +85,14 @@ Show-Command
 # Windows PowerShell sends the following command string to the
 # Icacls  program:
 #     X:\VMS /grant Dom\HVAdmin:(CI)(OI)F
-# ###########################################################################################
+#
+# ################################### 25 april 2019 ########################################################
+# I've since realized for something PS can't handle, like the SC command, 
+# i can simply use 
+# cmd /c sc
+# thus PS will flip to cmd, run "sc" and exit out back to PS
+# the --% does sound like it would be useful for escaping environment variables though
+# ################################### 25 april 2019 ########################################################
 # 
 # 
 # 
