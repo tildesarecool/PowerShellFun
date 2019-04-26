@@ -108,10 +108,88 @@ Show-Command
 # cmd /c sc
 # thus PS will flip to cmd, run "sc" and exit out back to PS
 # the --% does sound like it would be useful for escaping environment variables though
+# 
 # ################################### 25 april 2019 ######################################################### 
+#
+
+# ################################### 26 april 2019 ######################################################### 
+# it seems PS has some aliases to make it somewhat backwards compatible with CMD, like dir
+# but dir /s doesn't work because passing the "/s" to the underlying PS command is invalid
+# but using "dir -rec" would work
+# of course "cmd /c dir /s" also works but I'm assuming that can't be piped or do all the fancy stuff
+# that's the whole purpose of PS
+# 
+# lab for chapter 4: "using the help system"
+# 
+# 1. displaying a list of running processes
+# first I ran "Get-Help process"
+# in that list is "Get-Process" the description of which looks promising
+Get-Process
+# does indeed apparently list all the processes
+# 
+# 2. Displaying the 100 most recent entires from the application event log, not using Get-WinEvent
+# 
+# tried "Get-Help eventlog"
+# and noticed "Get-EventLog"
+# 
+# So i tried "Get-Help Get-EventLog"
+# 
+# that gave me some hints, but i needed more so I tried "Get-Help Get-EventLog -Examples"
+# 
+# which lead to "Get-Eventlog -LogName system -Newest 1000"
+# 
+# so I tried
+Get-Eventlog -LogName Application -Newest 100
+# 
+# 3. Display all "cmdlet" type commands
+# first I tried "Get-Help Get-Command -Examples" since it worked so well previously
+# and sure enough there's
+Get-Command -Type Cmdlet | Sort-Object -Property Noun | Format-Table -GroupBy Noun
+# which the description says lists all cmdlets. is that easy? copy/paste? where's the tricky part?
+# also, that is a lot of cmdlets
+# 
+# 4. Display a list of all aliases
+# I used "Get-Help Get-Command -Examples" again 
+# and also realized the command from 3 could be modified for aliases
+# thus we have this command here
+# 
+Get-Command -Type Alias | Sort-Object -Property Noun | Format-Table -GroupBy Noun
+# 
+# 
+# 5. make an alias so I can run notepad via command 'np'
+#
 # 
 # 
 # 
+# 
+#
+# 
+# 
+# 
+# 
+#
+# 
+# 
+# 
+# 
+#
+# 
+# 
+# 
+# 
+#
+# 
+# 
+# 
+# 
+#
+# 
+# 
+# 
+# 
+#
+# 
+# ################################### 26 april 2019 ######################################################### 
 # 
 # 
 # 
