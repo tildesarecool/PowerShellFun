@@ -90,13 +90,6 @@ Show-Command
 # Icacls  program:
 #     X:\VMS /grant Dom\HVAdmin:(CI)(OI)F
 #
-# ################################### 25 april 2019 ########################################################
-# I've since realized for something PS can't handle, like the SC command, 
-# i can simply use 
-# cmd /c sc
-# thus PS will flip to cmd, run "sc" and exit out back to PS
-# the --% does sound like it would be useful for escaping environment variables though
-# ################################### 25 april 2019 ########################################################
 # 
 # (below is april 2019)
 # 
@@ -109,8 +102,13 @@ Show-Command
 # it also mentioned Test-Connection as an alternative to ping but as the book says
 # it doesn't seem like a long of advantage over regular ping
 # 
-# 
-# 
+# ################################### 25 april 2019 ########################################################
+# I've since realized for something PS can't handle, like the SC command, 
+# i can simply use 
+# cmd /c sc
+# thus PS will flip to cmd, run "sc" and exit out back to PS
+# the --% does sound like it would be useful for escaping environment variables though
+# ################################### 25 april 2019 ######################################################### 
 # 
 # 
 # 
