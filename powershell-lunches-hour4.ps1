@@ -89,7 +89,6 @@ Show-Command
 # Windows PowerShell sends the following command string to the
 # Icacls  program:
 #     X:\VMS /grant Dom\HVAdmin:(CI)(OI)F
-<<<<<<< HEAD
 #
 # ################################### 25 april 2019 ########################################################
 # I've since realized for something PS can't handle, like the SC command, 
@@ -98,16 +97,6 @@ Show-Command
 # thus PS will flip to cmd, run "sc" and exit out back to PS
 # the --% does sound like it would be useful for escaping environment variables though
 # ################################### 25 april 2019 ########################################################
-=======
-# ###########################################################################################
-#
-# edit april 2019: i realized on my own that i could as easily run a command, like "sc", with:
-# cmd /c sc
-# that that would run the command and close afterwards
-# i just happened to have tried the sc command for a server related thing recently
-# apparently it does something else in PS. and the book discusses it too.
-# ###########################################################################################
->>>>>>> c8e1c2a8c891eaa38c0d407aee7398edeb3496fa
 # 
 # (below is april 2019)
 # 
