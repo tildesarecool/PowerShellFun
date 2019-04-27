@@ -157,46 +157,74 @@ Get-Command -Type Alias | Sort-Object -Property Noun | Format-Table -GroupBy Nou
 # 
 # 
 # 5. make an alias so I can run notepad via command 'np'
+# I used 
+Get-Help alias
+# 
+# and it automatically included all the examples
+# including literally one that will createp an alias "np" for notepad.exe
+# i suppose an exercise is an exercise though, right?
+# so here's command. it's just a copy/paste
+# 
+new-item -path alias:np -value c:\windows\notepad.exe
+# 
+# indeed, np now executes notepad
+# I guess an alias is sort of link a symbolic link?
+# i think i would still prefer good old mklink myself
+# but i may need to study this alias thing a bit more
+# 
+# 6. display a list of services that start the the letter M
+# note sure if this is even right or not but
+Get-Process M*
+# does show me a list of process and they all start the M so i'm counting it
 #
+# 7. display a list of all windows firewall rules, help or get-command may be ncessary to find which command
+# 
+# I started with 
+Get-Help firewall
+# in the list is "Get-NetFirewallRule" which looks promissing
+# actually i guess "Show-NetFirewallRule" also looks like it could be it
+# 
+# I looked at 
+Get-Help Show-NetFirewallRule -examples
+# which only had the one example with this description:
+# "This example displays all of the firewall rules currently in the active policy, which is the collection of all of the policy stores that apply to the computer."
+# I don't know. It's probably right.
+# the command being:
+Show-NetFirewallRule –PolicyStore ActiveStore
+# wow. that is a LOT of firewall rules. 
+# 
+# I also looked at
+Get-Help Get-NetFirewallRule -examples
+# which has 
+Get-NetFirewallRule -PolicyStore ActiveStore
+# which looks remarkably similar to the show one. I mean the command itself. they both have "policystore" and "activestore". Seem kind of similar.
+# the output also looks similar
+# I peaked at the answers and...i have no idea. the question wasn't specific enough. maybe the commands i used didn't exist when the book was written 
+# 
+# 8. Display a list of only inbound firewall rules. Same command okay to use
+# 
+# I've already read a lot of help files
+# I made it to
+Get-NetFirewallProfile -Name Public | Get-NetFirewallRule
+# and i think i'm close. shows everything though
+# -Direction Inbound
+# this might work
+# 
+# I think i got it:
+Get-NetFirewallRule -Direction Inbound
+# this does fit the question. The exercise isn't that specific about it. the output only includes inbound rules
+# so i'm counting it as complete
 # 
 # 
-# 
-# 
-#
-# 
-# 
-# 
-# 
-#
-# 
-# 
-# 
-# 
-#
-# 
-# 
-# 
-# 
-#
-# 
-# 
-# 
-# 
-#
-# 
-# 
-# 
-# 
-#
 # 
 # ################################### 26 april 2019 ######################################################### 
 # 
 # 
 # 
+# ################################### 27 april 2019 ######################################################### 
 # 
 # 
-# 
-# 
+# ################################### 27 april 2019 ######################################################### 
 # 
 # 
 # 
