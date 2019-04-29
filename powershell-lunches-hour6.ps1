@@ -187,252 +187,100 @@ Get-Service | ConvertTo-Html  > services.html
 #################################### killing processes and stopping services
 # 
 # 
+# an especially super great command that shouldn't be run is
+Get-Process | Stop-Process
+# as implied it goes through and stops all processes on the whole system
 # 
+# a much more useful form of this would be to stop a specific process:
+Get-Process -name notepad |Stop-Process
 # 
+# and ya, that is quite effective and instantanious
 # 
+# similiarly, Get-Service can be used in the same way by piping to stop, start and set-service
+# i tried theis with themes:
+Get-Service -name themes | Stop-Service
 # 
+# nothing really changed on screen. but the status is now stopped
 # 
+# cmdlets that modify the system in some signicant way like stop-service and stop-process
+# adhere to an "impact level" which by default is "high" and can't be changed
+# to see the current setting of the shell, use
+$confirmpreference
+# which will say "High"
+# anything with a higher impact than the setting reported by $confirmpreference
+# will force an "are you sure?" prompt
+# which can be overridden with
+# -confirm
 # 
+# any/all cmdlets that support -confirm also support -whatif, to run a thing and see what results "would be" 
+# without actually running it:
+Get-Service -name themes | Stop-Service -WhatIf
 # 
 # 
+# pff. not even trying it with -whatif
+# as a side note, get-content already has the two alias: type and cat
 # 
+#################################### clarifications on get-content versus import
 # 
 # 
+# after exporting some output to either CSV or XML there may be a question on reading it back in:
+# is there a difference between get-content versus import-csv in other words
+# the answer is the get-content will just stream an entire CSV file across the screen as it is in the text file
+# no formatting or intepretation in other words
+# while import-csv for instance would actually intepret and parse the entire file by format to create a much
+# more friendly format
 # 
+# moral is when the data doesn't need intepretation use get-content, otherwise use import-
 # 
+#################################### chapter 6 lab ####################################
 # 
 # 
+# 1. create two separate/different text files: compare them using diff. that's it. 
 # 
+# I created a couple of text files around the output of "systeminfo" and ran: 
+diff -ReferenceObject (Get-Content '.\alltheinfo - Copy.txt') -DifferenceObject (Get-Content .\alltheinfo.txt)
+# i think i like this diff thing
 # 
+# 2. what happens when running this command and why?
+Get-Service | Export-Csv .\services.csv | Out-File
 # 
+# there's an error message about the path argument being "null". i think it means the path argument is required
 # 
+# 3. what ways are there to specify a service to stop with stop-service besides piping in names of services?
+# is there a way to stop a service without using get-service at all?
 # 
+# yes, it is possible to stop a service without get-service using -name
+Stop-Service -name themes
+# for instance will do it. there's both a display name as well as just a name
 # 
 # 
+# 4. using export-csv, what parameter would be passed in to make it a "pipe delimited file" ?
 # 
+# looks like there's a -delimeter parameter. I ended up using quotes, but this works:
+Get-Process | Export-Csv process.csv -Delimiter "|"
 # 
+# 5. is there a way to export a csv file without that top # comment with the type info as an option?
 # 
+# I found that there's a -notypeinformation parameter and this appears to have worked. I just used a variation on the last command:
+Get-Process | Export-Csv process.csv -Delimiter "|" -NoTypeInformation
 # 
 # 
+# 6. for export-clixml and export-csv, which both over-write files by default, what parameter would ask for confirmation before over-writing?
+# and which would outright prevent the overwriting without asking?
 # 
+# there's a -confirm for asking for confirmation and a -noclobber for outright prevention without asking. 
+# as a bonus there's also -force
 # 
+# 7. what is the parameter to pass to export-csv to tell it use the system default seperator in cases where that may not be a comma?
 # 
+# the -UseCulture [<SwitchParameter>] appears to be it, with this description:
+# Indicates that this cmdlet uses the list separator for the current culture as the item delimiter. The default is a comma (,).
 # 
 # 
 # 
+#################################### chapters 1 - 6 review labs ####################################
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+# there's 18 of them. i'll do them tomorrow
 # 
 # 
 # 
@@ -586,6 +434,167 @@ Get-Service | ConvertTo-Html  > services.html
 # 
 # 
 #################################### 28 april 2019 ######################################################### 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
 # 
 # 
 # 
