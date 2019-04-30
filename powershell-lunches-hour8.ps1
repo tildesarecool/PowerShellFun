@@ -1,25 +1,26 @@
-# ################################### 30 april 2019 ######################################################### 
+# ################################### 30 april 2019 ################################### 
 # 
 # chapter 8: objectifying powershell
 # 
+# In PS when using a command like
+Get-Process | ConvertTo-Html | Out-File something.html
+# the different parts are referred to or o conceptulaized udner different names:
+# --> object: represents a single thing such as a single process or a single service; a table row
+# --> property: some piece of information about an object such as the the process name, process ID or service status; a table column
+# --> method: makes an object do a specific action like killing a process or start a service; relates to a single object
+# --> collection: this is a "set" of objects; the whole table
 # 
+#################################### revealing objects via get-member (gm)
 # 
+# to learn more about a specific object like get-process you would pipe in
+Get-Member
 # 
+# Get-Member can be used against any cmdlet that produces output, so
+Get-Process | Get-Member
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+# when a cmdlet such as get-process produces a collection of objects - literally just said that's a table - that whole table/collection
+# remains accessible until the end of the pipeline. So only after every command has run does PS filters the columns (properties) 
+# of information to be displayed and creates the final text output seen on screen
 # 
 # 
 # 
