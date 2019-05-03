@@ -186,35 +186,73 @@ Get-Date
 Get-Date | Select-Object DayOfWeek
 # 
 # 
-# --> 5. identify a cmdlet that displays info aout installed hotfixes 
+# --> 5. identify a cmdlet that displays info about installed hotfixes 
 # 
-#   
+# simply running
+Get-HotFix
+# apparently does exactly this
+# 
+# --> 6. Using Get-HotFix, display a list of installed hotfixes extended with an expression to sort the list by the installation date and display
+# only the install date, user who installed the hotfix, and hotfix ID. Look up real property names to be sure the names match the infomraiton(?)
+# 
+# Using the notes I took above, I came up with this line:
+Get-HotFix | Sort-Object InstalledOn | Select-Object InstalledOn,InstalledBy,HotFixID
+# 
+# which produced the output:
+# InstalledOn            InstalledBy         HotFixID
+# -----------            -----------         --------
+# 12/10/2018 12:00:00 AM NT AUTHORITY\SYSTEM KB4470788
+# 12/10/2018 12:00:00 AM NT AUTHORITY\SYSTEM KB4469041
+# 12/12/2018 12:00:00 AM NT AUTHORITY\SYSTEM KB4470502
+# 1/9/2019 12:00:00 AM   NT AUTHORITY\SYSTEM KB4480056
+# 2/13/2019 12:00:00 AM  NT AUTHORITY\SYSTEM KB4487038
+# 2/13/2019 12:00:00 AM  NT AUTHORITY\SYSTEM KB4483452
+# 3/15/2019 12:00:00 AM  NT AUTHORITY\SYSTEM KB4489907
+# 4/10/2019 12:00:00 AM  NT AUTHORITY\SYSTEM KB4493509
+# 4/10/2019 12:00:00 AM  NT AUTHORITY\SYSTEM KB4493510
+# 4/10/2019 12:00:00 AM  NT AUTHORITY\SYSTEM KB4493478
+# 
+#
+# not sure if that is what the book had in mind but it does meet all requirements.
+#
+# --> 7. repeat question 6 above, this time sorting the result by hotfix description and include the 
+# description, hotfix ID, and installation date. Put the whole thing into an HTML file.
+# 
+# I modified the line from 6 slightly to:
+Get-HotFix | Sort-Object Description | Select-Object InstalledOn,HotFixID,Description
+# which appears to be the right output and order so I added the HTML part:
+Get-HotFix | Sort-Object InstalledOn | Select-Object InstalledOn,InstalledBy,HotFixID | ConvertTo-Html | Out-File P:\Repos\PowerShellFun\hotfixinfo.html
+# 
+# Okay i did both converto-html and an out-file to a specific html file. probably longer than necessary but it got the job done
+# 
+# --> 8. display a list of the 50 newst entries from the secruity (or applicatoin or system) event log.
+# Sort the list with the oldest entries appearing first and with entries made at the same time sorted by their index
+# Display the index, time and source for each entry.
+# Put this information into a text file
+# Do not use select-object with or without the -first or -last parameter as there is a better way 
+# also don't use get-winevent as a better cmdlet can accomplish this
 # 
 # 
+# I wasn't sure how pull this off without select-object at first but then i saw where-object in my notes
+# and how it was the inverse of select object: where select-object add columns in, where-object trims columns off
+# so i started with:
+Get-EventLog -Newest 50 -LogName "Application" | Sort-Object Time -Descending
+# because...it said not use select-oject/first last, didn't say anything about get-evenlog newest...
+# so now all i have to do is trim off the other columns so all i am list with is: index, time and source
+# which means i /don't/ need entrytype, instanceid or message
 # 
+# Okay so this was wasting a lot of time and i was losing patients to i peeked at the answer...
+# as usual i was making it uneccesarily complicated 
+# since apparently all i needed was sort-object and the answer usess select-object
 # 
+# I thought it was saying to not use select-object /at all/ where really it was just saying not use the -newest thing
+# I mean I guess. it's not very obvious.
 # 
+# indeed this works:
+Get-EventLog -Newest 50 -LogName "Application" | Sort-Object TimeGenerated,index -Descending | Select-Object Index,TimeGenerated,Source 
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+# now just send it to file. for some reason. whatever.
+Get-EventLog -Newest 50 -LogName "Application" | Sort-Object TimeGenerated,index -Descending | Select-Object Index,TimeGenerated,Source | Out-File P:\Repos\PowerShellFun\applog.txt
 # 
 # 
 # 
