@@ -1,4 +1,4 @@
-# ################################### 4 May 2019 ######################################################### 
+# ################################### 4th and 5th May 2019 ######################################################### 
 # 
 # chapter 10: formatting
 # 
@@ -129,34 +129,78 @@ Get-Service | Format-Table name,status,DisplayName -AutoSize -Wrap
 ################################### FORMATTING LISTS
 # 
 # 
+# format-list - alias 'fl' - can be used to display more information horizontally in a table 
 # 
+# format-list supports some of the same parameters as format-table, such as -proprty
 # 
+# similar to 'gm', format-listwill also display the values for those properties so you can see what kind of info each property contains
+# such as:
+Get-Service | format-list *
 # 
 # 
 # 
 # 
+################################### FORMATTING WIDE LISTS
 # 
 # 
+# The cmdlet format-wide - alias fw - displays a wide list.
+# will only display the values of a single property so its -property accepts only one property name, not a list
+# it will not accept wild cards
 # 
+# by default format-wide will look for an object's name property
+# generally it will default to two columns but -columns parameter can be used to specify more columns:
+Get-Process | Format-Wide name -col 4
 # 
 # 
 # 
+################################### creating custom columns and list entries
 # 
+# format-list and format-table can use the same constructs to create custom table columns and list entries 
+# via that hash table notation 
+# to add customp roperties to an an object
 # 
+# for instance:
+Get-Service | Format-Table @{name='ServiceName';Expression={$_.Name}},Status,DisplayName
 # 
+# sample of output
+# ServiceName                                             Status DisplayName
+# -----------                                             ------ -----------
+# AJRouter                                               Stopped AllJoyn Router Service
+# ALG                                                    Stopped Application Layer Gateway Service
+# AlienFusionService                                     Running AlienFusion Windows Service
 # 
 # 
 # 
 # 
 # 
+Get-Process | Format-Table Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}} -AutoSize
 # 
 # 
+# explainer of above:
 # 
+# ---> get-process is being piped to format-table, which wants to display the VM property in bytes (as reported if you pipe it to fl *)
+# ---> we're having format-table start with the process's Name property
+# ---> then the hash table notation is used to create a cusotm column that will be labeled "VM(MB)"
+# this is followed by what could be a definition of a value or an expression for that column by taking the normal VM property and 
+# dividing it by 1MB, using teh slash for the div operator
+# PS will recognize the shortcuts: KB, MB, GB, TB and PB
+# ---> the -as parameter change the data type to an integer, cutting off the resulting decimal. PS rounds/up down as appropriate
+# ---> also, all the normal operators can be used: *, +, - in addition to / are all that are mentioned (what, no modulo?)
 # 
+# the format-* cmdlets can handle keys that are intended for controlling the visual display 
+# in addition to the ones supported by select-object: label, name and expression
 # 
+# additional include:
+# --> FormatString - specifies a formatting code causing the data to be displayed according to the specified format
+# (mainly useful for numeric and date data)
+# --> Width - specifies desired column width
+# --> Alignment - specifies the desired column alignment of left or right
 # 
+# using these keys, it is easier to achieve the prior example results
+Get-Process | Format-Table Name, @{name='VM(MB)';Expression={$_.VM};FormatString='F2';align='right'} -AutoSize
 # 
 # 
+################################### Going out: to a file, a printer or a host (10.7)
 # 
 # 
 # 
@@ -344,35 +388,48 @@ Get-Service | Format-Table name,status,DisplayName -AutoSize -Wrap
 # 
 # 
 # 
+#################################### chapter 10 lab
 # 
+# ---> 1. display a table of process that includes only the process names, IDs and whether they're repsonding to windows (the responding proeprty has that info)
+# have the table take up as little horizontal room as possible, but don't allow any info to be truncated
 # 
 # 
 # 
 # 
 # 
 # 
+# ---> 2. display a table of processes that includes the process names and IDs also include columns of virtual and phsycial memory usage, expressing values in MBs
 # 
+# this command probably has something to do with it:
+# Get-Process | Format-Table Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}} -AutoSize
 # 
 # 
 # 
 # 
+# ---> 3. use get-eventlog on windows to display a list of available event logs (hint: you need to read the help to learn correct parameter to accompolish)
+# format output as a table that includes in this order the log display name and retention period. the column headers must be logname and retdays
 # 
 # 
 # 
 # 
 # 
+# ---> 4. display a list of services so that a seperate table is displayed for services that are started and services that are stopped. services
+# that are started should be displayed first (hint: use -groupby) parameter
 # 
 # 
 # 
 # 
 # 
 # 
+# ---> 5. display a four-column-wide list of all directories in the root of C: drive. 
 # 
 # 
 # 
 # 
 # 
 # 
+# ---> 6. create a formatted list of all .exe files in c:\widows displaying the name, version info, and file size. PS uses the length property but to make 
+# it clearer your outoput should show size.
 # 
 # 
 # 
@@ -496,80 +553,5 @@ Get-Service | Format-Table name,status,DisplayName -AutoSize -Wrap
 # 
 # 
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-#################################### 4 May 2019 ######################################################### 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+#################################### 4 and 5th May 2019 ######################################################### 
 # 
