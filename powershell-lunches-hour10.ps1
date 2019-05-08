@@ -202,15 +202,16 @@ Get-Process | Format-Table Name, @{name='VM(MB)';Expression={$_.VM};FormatString
 # 
 ################################### Going out: to a file, a printer or a host (10.7)
 # 
+# By default, the format-* cmdlets will automatically go to out-default which goes to out-host which puts it up on the screen.
+# For instance:
+Get-Service | Format-Wide
+# Using this command and piped to out-host will do the exactly same thing
+# this is what makes the difference with out-file and out-printer: directing out put to other non-screen sources like like a file or a printer
 # 
+# out-printer and out-file default to a specific character width, which means what is generated may look different then the screen output
+# to correct this, both cmdlets have a -width parameter than enables changes to the output width
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+################################### Another out: gridviews (10.8)
 # 
 # 
 # 
