@@ -213,18 +213,17 @@ Get-Service | Format-Wide
 # 
 ################################### Another out: gridviews (10.8)
 # 
+# out-gridview - another form of output, which bypasses the formatting system. It can only receive regular objects output by other cmdlets.
+# when it is run:
+# no format-* cmdlets are called
+# no formatting instructions are produced
+# no text output is displayed
+# out-gridview can't receive output of a format-*cmdlet
 # 
+################################### always format right 10.9.1
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+# the format-* cmdlets should always be the last thing on the command line (except things like out-file and out-printer)
+# it is last/on the right so that it can directly to the auto-included out-default and out-host which will take in the formatting instructions
 # 
 # 
 # 
