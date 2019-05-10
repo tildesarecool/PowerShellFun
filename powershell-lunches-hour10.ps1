@@ -225,19 +225,21 @@ Get-Service | Format-Wide
 # the format-* cmdlets should always be the last thing on the command line (except things like out-file and out-printer)
 # it is last/on the right so that it can directly to the auto-included out-default and out-host which will take in the formatting instructions
 # 
+# the command 
+Get-Service | Format-Table | gm
+# demonstrates this (all the typename lines end in ".format.format-something")
+# when running the above gm isn't displaying info about your service objects
+# because the format-table cmdlet doesn't output service objects
+# it consumes the service objects you pipe in and it outputs formatting 
+# instructions which is what gm sees and reports on
 # 
+# on the other hand, if you run this:
+Get-Service | select name,DisplayName,Status | Format-Table | ConvertTo-Html | Out-File .\services.html
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+# the results won't be quite what is expected:
+# instead of objects being piped to convertto-html formatting instructions were piped to convertto-html
+# this is a good demonstration of why the format-* cmdlets have to be at the end of second to the end of 
+# any given command that is run
 # 
 # 
 # 
