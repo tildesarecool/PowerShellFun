@@ -218,7 +218,16 @@ Get-Service | Format-Wide
 # no format-* cmdlets are called
 # no formatting instructions are produced
 # no text output is displayed
-# out-gridview can't receive output of a format-*cmdlet
+# out-gridview can't receive output of a format-* cmdlets
+# 
+# out-gridview will accept only standard objects and won't accept formatting instructions
+# 
+# these two commands demonstrate the point with out-gridview
+# 
+Get-Process | Out-GridView
+Get-Process | Format-Table | Out-GridView
+# 
+# The first one generates this GUI subwindow and the second one just throws an error
 # 
 ################################### always format right 10.9.1
 # 
@@ -244,142 +253,33 @@ Get-Service | select name,DisplayName,Status | Format-Table | ConvertTo-Html | O
 # 
 # 
 # 
+################################### One object type at a time 10.9.2
 # 
+# It is best to avoid putting multiple kinds of objects into the pipeline.
 # 
+# the formatting system looks at the type of the first object inserted into the pipeline
+# and determines the formatting based on that object type
 # 
+# insert mutliple object types and output may not be comlete or useful
 # 
 # 
+# an example of what happens when two objects are sent to the pipline is using two commands in one line with a semicolon:
+Get-Process; Get-Service
 # 
+# the get-process object displays as expected but when it comes time for the get-service
+# it displays in more of list format than a the normal multiple column format which usual:
 # 
+# sample:
 # 
 # 
+# Status      : Running
+# Name        : WpnUserService_aa85d
+# DisplayName : Windows Push Notifications User Service_aa85d
 # 
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+# Status      : Running
+# Name        : wscsvc
+# DisplayName : Security Center
 # 
 # 
 # 
