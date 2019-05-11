@@ -104,7 +104,7 @@ Get-WmiObject win32_OperatingSystem
 # this parameter acepts a comma-separated list of properties that should be included in the table
 # and will use the casing provided (cpu vs CPU)
 # this will accept wild cards
-# it will only display proeprties that can fit in the table so not all the properties specified may display 
+# it will only display properties that can fit in the table so not all the properties specified may display 
 # parameter is positional so doesn't have to type the parameter name, just put the property list in the first psoition
 get-process | Format-Table ID,Name,Responding -AutoSize
 # 
@@ -295,17 +295,19 @@ Get-Process; Get-Service
 # ---> 1. display a table of process that includes only the process names, IDs and whether they're repsonding to windows (the responding proeprty has that info)
 # have the table take up as little horizontal room as possible, but don't allow any info to be truncated
 # 
-# 
-# 
+# well i know get-process is going to be involved as is format-table
+# probably somewhere around this:
+Get-Process | Format-Table ID,Name,Responding -AutoSize -Wrap
 # 
 # 
 # 
 # ---> 2. display a table of processes that includes the process names and IDs also include columns of virtual and phsycial memory usage, expressing values in MBs
 # 
 # this command probably has something to do with it:
-# Get-Process | Format-Table Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}} -AutoSize
+# Get-Process | Format-Table ID,Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}}, Expression={[int]($_.NPM/1024)}}, @{Label="PM(K)";Expression={[int]($_.PM/1024)}}
 # 
-# 
+# I'm almost positive this is it
+Get-Process | Format-Table ID,Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}}, @{Label='PM(MB)';Expression={$_.PM / 1MB -as [int]}}
 # 
 # 
 # ---> 3. use get-eventlog on windows to display a list of available event logs (hint: you need to read the help to learn correct parameter to accompolish)
