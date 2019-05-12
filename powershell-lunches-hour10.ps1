@@ -33,7 +33,8 @@ get-process | gm
 # ---> 4. when objects are passed to out-host it passes them to the formatting system as 
 # most out-* cmdlets are incapable of working with standard objects, instead made to work with special formatting instructions
 #  
-# ---> 5. the formatting system looks at the type of oject and follows an internal set of formatting rules (using an XML file that defines this). 
+# ---> 5. the formatting system looks at the type of oject and follows an internal set of formatting rules (using an XML file that 
+# defines this). 
 # using the rules to produce formatting instructions, these are passed back to out-host. 
 #
 # ---> 6. Once out-host gets the formatting instructions, it uses those to assemble the onscreen display
@@ -133,7 +134,7 @@ Get-Service | Format-Table name,status,DisplayName -AutoSize -Wrap
 # 
 # format-list supports some of the same parameters as format-table, such as -proprty
 # 
-# similar to 'gm', format-listwill also display the values for those properties so you can see what kind of info each property contains
+# similar to 'gm', format-lis twill also display the values for those properties so you can see what kind of info each property contains
 # such as:
 Get-Service | format-list *
 # 
@@ -157,7 +158,7 @@ Get-Process | Format-Wide name -col 4
 # 
 # format-list and format-table can use the same constructs to create custom table columns and list entries 
 # via that hash table notation 
-# to add customp roperties to an an object
+# to add custom properties to an an object
 # 
 # for instance:
 Get-Service | Format-Table @{name='ServiceName';Expression={$_.Name}},Status,DisplayName
@@ -313,31 +314,45 @@ Get-Process | Format-Table ID,Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as 
 # ---> 3. use get-eventlog on windows to display a list of available event logs (hint: you need to read the help to learn correct parameter to accompolish)
 # format output as a table that includes in this order the log display name and retention period. the column headers must be logname and retdays
 # 
+# I found the wording of this confusing so i just looked it up:
+Get-EventLog -List | Format-Table @{l='logname';e={$_.LogDisplayName}},@{l='retdays';e={$_.minimumretentiondays}} -AutoSize
 # 
 # 
 # 
+# ---> 4. display a list of services so that a seperate table is displayed for services that are started and services 
+# that are stopped. services that are started should be displayed first (hint: use -groupby parameter)
 # 
-# ---> 4. display a list of services so that a seperate table is displayed for services that are started and services that are stopped. services
-# that are started should be displayed first (hint: use -groupby) parameter
+# probably involves Get-Service | format-list * 
+# in some way
+Get-Service | format-list -GroupBy started
+# at least does started first and stopped last, not really a table though and there are other statuses
 # 
+# Get-Service | select name,status | Format-table @{name='ServiceName';Expression={$_.Name}},Status -groupby started
 # 
+# Get-Service | select name,DisplayName,Status | Format-Table
+# 
+# wasn't having that much luck with this one so i finally looked it up. seems much simpler than i was making it:
+Get-Service | sort Status -Descending | Format-Table -GroupBy status
 # 
 # 
 # 
 # 
 # ---> 5. display a four-column-wide list of all directories in the root of C: drive. 
 # 
+# wasn't sure how to look at the filesystem like this. but there were examples about the file system in the chapter I forgot about
+# so anyway answer:
+dir c:\ -Directory | Format-Wide -Column 4
 # 
 # 
 # 
+# ---> 6. create a formatted list of all .exe files in c:\windows displaying the name, version info, and file size. PS uses 
+# the length property but to make it clearer your outoput should show size.
 # 
 # 
-# ---> 6. create a formatted list of all .exe files in c:\widows displaying the name, version info, and file size. PS uses the length property but to make 
-# it clearer your outoput should show size.
+# The word of this I found confusing. maybe if the chapter were more fresh in my memory.
+# anyway i looked the answer of this up as well
 # 
-# 
-# 
-# 
+dir C:\Windows\*.exe | Format-List Name,VersionInfo,@{name="size";expression={$_.length}}
 # 
 # 
 # 
