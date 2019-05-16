@@ -308,7 +308,7 @@ Get-Process | Format-Table ID,Name,Responding -AutoSize -Wrap
 # Get-Process | Format-Table ID,Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}}, Expression={[int]($_.NPM/1024)}}, @{Label="PM(K)";Expression={[int]($_.PM/1024)}}
 # 
 # I'm almost positive this is it
-Get-Process | Format-Table ID,Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}}, @{Label='PM(MB)';Expression={$_.PM / 1MB -as [int]}}
+Get-Process  | sort VirtualMemorySize -Descending | Format-Table  ID,Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}}, @{Label='PM(MB)';Expression={$_.PM / 1MB -as [int]}} 
 # 
 # 
 # ---> 3. use get-eventlog on windows to display a list of available event logs (hint: you need to read the help to learn correct parameter to accompolish)

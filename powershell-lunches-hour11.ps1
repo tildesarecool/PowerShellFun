@@ -111,23 +111,24 @@ Get-Service | Where-Object {$_.Status -eq 'running' -AND $_.StartType -eq 'Manua
 # 
 # 
 # 
-################################### 11.5: using iterative model (the second model from above)
+################################### 11.5: using iterative model e.g. "PS Iterative Command-line Model or PSICLM (the second model from above)
 # 
 # 
+# The idea behind PSICLM you can start small instead of using long complex command lines
 # 
+# example: measuring the top 10 processes consuming virtual memory, exclusing PS itself
 # 
+# Summary what is necessary:
 # 
+# - get processes
+# - get rid of PS related
+# - sort processes by virtual memory usage
+# - keep only top or bottom 10 virtual memory consumer depending on sorting
+# - add up virtual memory for whatever is left
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+# there's a "try it out"  at this point. doing the first 4 steps above with aid of select-object
+# I came up with this although I don't think the sorting is quite right
+Get-Process  | sort 'VM(MB)' -Descending | Select-Object -First 10  | Format-Table  ID,Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}}, @{Label='PM(MB)';Expression={$_.PM / 1MB -as [int]}}
 # 
 # 
 # 
