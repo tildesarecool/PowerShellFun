@@ -131,43 +131,54 @@ Get-Service | Where-Object {$_.Status -eq 'running' -AND $_.StartType -eq 'Manua
 Get-Process  | sort 'VM(MB)' -Descending | Select-Object -First 10  | Format-Table  ID,Name, @{name='VM(MB)';Expression={$_.VM / 1MB -as [int]}}, @{Label='PM(MB)';Expression={$_.PM / 1MB -as [int]}}
 # 
 # 
+# as for the answer:
+Get-Process | Where-Object -filter { $_.Name -notlike 'powershell*' }
+# this is the first step, excluding the PS related processes
+# 
+# next step:
+Get-Process | Where-Object -filter { $_.Name -notlike 'powershell*' } | sort VM -Descending | select -First 10
+# 
+# and now for the last part:
+# 
+Get-Process | Where-Object -filter { $_.Name -notlike 'powershell*' } | sort VM -Descending | select -First 10 | Measure-Object -Property VM -Sum
+# 
+# here is the output:
+# 
+# Count    : 10
+# Average  :
+# Sum      : 22115615014912
+# Maximum  :
+# Minimum  :
+# Property : VM
 # 
 # 
+################################### 11.6.2 when $_ is allowed
+# 
+# the $_ for a place holder is only valid in the places where PS knows to look for it.
+# 
+# when valid, it contains one object at a time from the ones piped into the cmdlet
+# 
+# sometimes using the $_ placeholder in a long command that uses paranthesis can be tricky
+# 
+# such as this example:
+Get-Service -ComputerName ( Get-Content .\computers.txt | Where-Object -filter { $_ -notlike '*dc' } ) |  Where-Object -filter { $_.Status -eq 'Running' }
 # 
 # 
+# walking through this command:
+# 
+# 1. starts with get-service but that does not run first because get-content is in the parantheses
+# 2. get-content is piping its string objects over to where-object, which is inside parantheses.
+#      withing its filter, $_ represents those string objects from get-content.
+#      the strings that end in "dc" will be excluded for output by where-object
+# 3. where-object being the last cmdlet in the parantheses, the where-object output becomes the result
+#       of the paranthetical command. because of this only the computer names that don't end in dc 
+#       will be sent to the -computername parameter of get-service
+# 4. finally, get-service runs and the produced ServiceController objects will be piped to where-object
+#       This instance of where-object will put one service at a time into the $_ placeholder and
+#       and keep only the services it finds with a status of 'runing'
 # 
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+################################### 11.7: chapter 11 lab
 # 
 # 
 # 
