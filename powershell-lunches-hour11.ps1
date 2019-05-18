@@ -185,18 +185,76 @@ Get-Service -ComputerName ( Get-Content .\computers.txt | Where-Object -filter {
 # 1. Import the NetAdapter module. using the get-netadapter cmdlet, display a list of non-virutal network adapters (virtual property is false
 # which PS represents with a special $False constant)
 # 
+# Looks like get-netadapter already works, no importign necessary with v5
+# 
+# i did a gm against it and there is "virtual" property that is a bool
+# 
+# so maybe something like
+Get-NetAdapter | Where-Object Virtual -EQ false
+# ?
+# It's only showing me one of three adapters and that has "virtual adapter" in the description. Seems like my ethernet and wifi adapters should show
+# the "virtual" one shouldn't but this could be entirely on PS' end
+# this command actually got same results as above:
+Get-NetAdapter | Where-Object -filter {$_.Virtual -eq 'false' }
 # 
 # 
+# I finally just looked it up and it's just:
+Get-NetAdapter -Physical
+# that's it. boom. ethernet/wifi only. jeeeeeze. I don't even see that listed in the gm or the help. ok then.
+#
+#
+#
 # 2. Import DNSClient module. Using the get-dnsclientcache cmdlet, display a list of A and AAAA records from the cache 
 # hint: if cache comes up empty vist a couple of web pages
 # 
+# this one i found a little confusing. I ran get-dnsclientcache and it seem to scroll through pages and pages and I never even 
+# saw a record that wasn't either AAAA or A. Seems like just get-dnsclientcache could be an answer
+#  So i looked it up and this is it:
+get-dnsclientcache -Type AAAA,A
+# that's it. I don't get it. Whatever
 # 
 # 
 # 3. Display all EXE files in C:\Windws\System32 that are larger than 5MBs.
 # 
+# Going back to chap 10, i have this line 
+dir C:\Windows\*.exe | Format-List Name,VersionInfo,@{name="size";expression={$_.length}}
 # 
+# so i can probably make a variation of it using something other than format-list 
+# there's this: where Status -eq 'Running'
+# 
+# I tried this and it ended up I think working:
+# 
+dir C:\Windows\*.exe | Where-Object Length -GT 5
+# 
+# 
+# output:
+# 
+# Mode                LastWriteTime         Length Name
+# ----                -------------         ------ ----
+# -a----        9/15/2018  12:28 AM          78848 bfsvc.exe
+# -a----        3/15/2019  10:48 AM        4245280 explorer.exe
+# -a----        9/15/2018  12:29 AM        1065472 HelpPane.exe
+# -a----        9/15/2018  12:29 AM          18432 hh.exe
+# -a----        5/16/2019   6:47 PM         254464 notepad.exe
+# -a----       12/12/2018  12:57 PM         358400 regedit.exe
+# -a----        5/16/2017   1:37 PM        2650336 RtCamU64.exe
+# -a----        9/15/2018  12:28 AM         132096 splwow64.exe
+# -a----        9/15/2018  12:29 AM          11776 winhlp32.exe
+# -a----        9/15/2018  12:29 AM          11264 write.exe
 # 
 # 4. Display a list of hotfixes: security updates
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
 # 
 # 
 # 5. Display a list of hotfixes that installed by the Administrator, and which are updates.
