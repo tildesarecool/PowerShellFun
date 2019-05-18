@@ -76,7 +76,7 @@ Get-Service | Where-Object -filter { $_.Status -eq 'Running' }
 # 
 # Since the -filter parameter is positional, this is equivalent to above:
 # 
-Get-Service | Where { $_.Status -eq 'Running' }
+Get-Service | Where-Object { $_.Status -eq 'Running' }
 # 
 # explanation:
 # when objects are piped to where-object, each object is is examined by where-object using its filter
@@ -180,32 +180,33 @@ Get-Service -ComputerName ( Get-Content .\computers.txt | Where-Object -filter {
 # 
 ################################### 11.7: chapter 11 lab
 # 
+# before the lab questions the book suggests there will be an emphasis on "filter left"
+# 
+# 1. Import the NetAdapter module. using the get-netadapter cmdlet, display a list of non-virutal network adapters (virtual property is false
+# which PS represents with a special $False constant)
+# 
+# 
+# 
+# 2. Import DNSClient module. Using the get-dnsclientcache cmdlet, display a list of A and AAAA records from the cache 
+# hint: if cache comes up empty vist a couple of web pages
+# 
+# 
+# 
+# 3. Display all EXE files in C:\Windws\System32 that are larger than 5MBs.
+# 
+# 
+# 
+# 4. Display a list of hotfixes: security updates
+# 
+# 
+# 5. Display a list of hotfixes that installed by the Administrator, and which are updates.
+# If they're aren't any try finding hotfixes installed by the "system" account.
+# ignore updates that don't have an "installed by" value
 # 
 # 
 # 
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+# 6. Display a list of all processes running witheither the name "conhost" OR the name "SVCHOST".
 # 
 # 
 # 
