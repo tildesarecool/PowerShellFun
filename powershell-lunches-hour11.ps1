@@ -244,30 +244,34 @@ dir C:\Windows\*.exe | Where-Object Length -GT 5
 # 
 # 4. Display a list of hotfixes: security updates
 # 
+# looked it up from chapter 9 notes but i have the information here in these notes: just use where-object. Right?
+# I think I could use select-object but this one works fine
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+Get-HotFix | Where-Object Description -eq "Security Update"
 # 
 # 
 # 5. Display a list of hotfixes that installed by the Administrator, and which are updates.
 # If they're aren't any try finding hotfixes installed by the "system" account.
 # ignore updates that don't have an "installed by" value
 # 
+# all my updates are installed by "NT AUTHORITY\SYSTEM" so there's not much to differentiate them
+# but I'll do a substitute thing instead maybe 
 # 
+# well i'm sure this is fine/close enough
+Get-HotFix | Where-Object Description -like "Security Update"
 # 
+# this one is pretty good I guess
+Get-HotFix | Where-Object InstalledBy -gt 5/15/2019
 # 
-# 6. Display a list of all processes running witheither the name "conhost" OR the name "SVCHOST".
+# 6. Display a list of all processes running with either the name "conhost" OR the name "SVCHOST".
 # 
+# i kept trying to do a more complicated version with booleans to take out the conhost and svchost
+#
+# and now I realize it says the ones that include conhost/svchost, not exclude
+# can't get it to work for some reason
+# so here's the answer remarkably easy:
 # 
-# 
+Get-Process -Name svchost,conhost
 # 
 # 
 # 
