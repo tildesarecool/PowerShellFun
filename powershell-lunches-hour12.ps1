@@ -1,16 +1,16 @@
-# ################################### 29 april 2019 ######################################################### 
+# ################################### 22 May 2019 ######################################################### 
 # 
-# chapter 7: by your...command?
+# chapter 12: A more practical approach
 # 
+# This chapter won't have anytying new, it will just be examples of what's been covered so far. 
+# it will consist of a task and steps to complete it
 # 
+# this will actually be with PS v5 and win 10, amazing
 # 
+# goal: use PS to modify some of the default user privleges on the local system. 
+# not necessarily permissions but system-wide tasks that a user or group has the ability to perform
 # 
-# 
-# 
-# 
-# 
-# 
-# 
+# ################################### 12.2
 # 
 # 
 # 
