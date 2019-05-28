@@ -119,7 +119,7 @@ Show-Command
 # of course "cmd /c dir /s" also works but I'm assuming that can't be piped or do all the fancy stuff
 # that's the whole purpose of PS
 # 
-# lab for chapter 4: "using the help system"
+# ################################### lab for chapter 4: "using the help system"
 # 
 # 1. displaying a list of running processes
 # first I ran "Get-Help process"

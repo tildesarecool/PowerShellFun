@@ -1,0 +1,279 @@
+5/27/2019
+
+This is supposed to be a chapter 1 - 13 review. But nothing really happens in the first three
+chpaters. 
+chapter 1 explains what power shell is and how to install it and find out which version is installed
+chapter 2 is about various methods of running commands and console settings
+chapter 3 is about the help system. actually the whole book has an emphasis on using the help system. which is good because it sort of future-proofs
+
+so really it's chapters 4 - 13 review
+
+chapter 4
+
+chapter 4 covers a few basic commands and how they work
+actually some stuff aobut aliases which I had forgotten about.
+that importing/exporting aliases for later use
+
+looks like you can query what aliases may exist for commands, like get-service:
+get-alias -Definition "Get-Service"
+would return that there's an alias called "gsv"
+
+I remember thinking aliases in PS were different than the aliases of the bash shell
+not sure if I remember why i thought that.
+
+as i recall aliases in Bash (and X) are more used...okay i don't remember at all. I think it is like a 
+dir for ls -l thing. which isn't quite the same. I think PS aliases can be used like that. just not exactly
+
+chapter 4 also talks about "positional parameters"
+which is the idea of just putting in a value for a paremeter rather than specifying the parameter ten the value
+
+an easy example is a move command:
+move file1.txt \users\tildes
+is really a shortcut for
+
+move -path c:\file1.txt -Destination \users\tildes
+
+the path and destination parameters will always be in the same place.. or position... so just putting in the 
+values in those positions is just as acceptable 
+
+apparently get-childitem is the PS way of doing a DIR command
+and 
+get-childitem c:\users
+is the short way of doing
+get-childitem -path c:\users
+
+a feature I completely forgot about...show-command
+
+a GUI for filling out parameters and options for a cmdlet
+which can then be run direct from the GUI and/or the command can be copied to the clipboard for copy/paste later
+
+I tried 
+Show-Command Invoke-Command
+it reminded me that the "scriptblock" is what the thing is really called
+i think comptuername was used in place of scriptblock
+kind of confusing
+anyway show-command seems great
+
+looks like
+new-psdrive -persistent
+is ps equiv of 
+net use 
+for mapping
+
+one that isn't used in these first 13 chapters is variables with the $ sign
+but chapter 4 actually mentions an example in the "will old commands run" section
+as in:
+$exe = \some\path\to\exe
+$host = "thinkcentre1"
+$user = "joe"
+$password = "password"
+$backuptype = "incremental " & $exe -h $host -u $user -p $password 
+
+well that's the idea anyway. concontenating a string as with any language
+just using $ to define and designate the variables
+
+very simple yet effective
+
+oh, i thought the & ampersand was a concatenation thing but i guess it's an "invocation operator"
+to pass in the exe along with the parameters
+the & isn't really covered that much either after chapter 4. maybe later on
+
+################################### chapter 5: providers
+
+lets move on to chapter 5: i'm actually still not sure what these are
+and they're not really mentioned that much outside of chapter 5
+
+A PSProvider is an "adapter" that "takes some kind of data storage" and "makes it look like disk drive"
+
+Ya, i got no idea what that means. I mean i kind of have an idea. But not really
+
+get-psprovider lists some possible providers and their "capabilities" and "drives"
+
+the FileSystem provider for instance has "capabilities" of:
+Filter, ShouldProcess, Credentials
+and "drives" on this local PC of
+ {C, P}
+
+ Interestingly, enabling Remoting provides a new PSProvider called WSMan
+ why this wasn't mentioned in chapter 13, all about Remoting, I have no idea
+
+ looking at provider info samples:
+ #############
+
+ Name                 Capabilities                                                              Drives
+----                 ------------                                                              ------
+Registry             ShouldProcess, Transactions                                               {HKLM, HKCU}
+Alias                ShouldProcess                                                             {Alias}
+Environment          ShouldProcess                                                             {Env}
+FileSystem           Filter, ShouldProcess, Credentials                                        {C, P}
+Function             ShouldProcess                                                             {Function}
+Variable             ShouldProcess                                                             {Variable}
+WSMan                Credentials                                                               {WSMan}
+#############
+
+"ShouldProcess" seems to indicate inclusion of -whatif and -ocnfirm parameters for testing before executing
+
+filter just means it has the -filter parameter
+
+Credentials means alt Credentials can be specified
+
+Transactions - means you can use a provider to "make several changes" then "either roll back or commit to those changes". Not even sure what that means
+
+get-psdrive is used as an example. I ran this and got this back.
+
+Name           Used (GB)     Free (GB) Provider      Root                      CurrentLocation
+----           ---------     --------- --------      ----                      ---------------
+Alias                                  Alias
+C                  62.89        175.04 FileSystem    C:\                      Windows\system32
+Cert                                   Certificate   \
+Env                                    Environment
+Function                               Function
+HKCU                                   Registry      HKEY_CURRENT_USER
+HKLM                                   Registry      HKEY_LOCAL_MACHINE
+P                 452.16       1410.85 FileSystem    P:\                      Repos\PowerShellFun
+Variable                               Variable
+WSMan                                  WSMan
+############# ############# ############# ############# #############
+
+this may or may not be easy to follow:
+- the psprovider "adapts the data store"
+- the psdrive "makes it accessible"
+- cmdlets allow for seeing and manipulating data exposed by each psdrive
+
+generally cmdlets that are used with have "item" some where in them
+as demonstrated by get-command -noun *item*:
+
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Function        Get-DAEntryPointTableItem                          1.0.0.0    DirectAccessClientComponents
+Function        Get-TestDriveItem                                  3.4.0      Pester
+Function        New-DAEntryPointTableItem                          1.0.0.0    DirectAccessClientComponents
+Function        Remove-DAEntryPointTableItem                       1.0.0.0    DirectAccessClientComponents
+Function        Rename-DAEntryPointTableItem                       1.0.0.0    DirectAccessClientComponents
+Function        Reset-DAEntryPointTableItem                        1.0.0.0    DirectAccessClientComponents
+Function        Set-DAEntryPointTableItem                          1.0.0.0    DirectAccessClientComponents
+Cmdlet          Clear-Item                                         3.1.0.0    Microsoft.PowerShell.Management
+... (snipped for brevity) ...
+Cmdlet          New-Item                                           3.1.0.0    Microsoft.PowerShell.Management
+Cmdlet          New-ItemProperty                                   3.1.0.0    Microsoft.PowerShell.Management
+Cmdlet          Remove-Item                                        3.1.0.0    Microsoft.PowerShell.Management
+Cmdlet          Remove-ItemProperty                                3.1.0.0    Microsoft.PowerShell.Management
+Cmdlet          Rename-Item                                        3.1.0.0    Microsoft.PowerShell.Management
+Cmdlet          Rename-ItemProperty                                3.1.0.0    Microsoft.PowerShell.Management
+Cmdlet          Set-Item                                           3.1.0.0    Microsoft.PowerShell.Management
+Cmdlet          Set-ItemProperty                                   3.1.0.0    Microsoft.PowerShell.Management
+############# ############# ############# ############# #############
+
+starting with FileSystem PSProvider...
+
+files and folders are both generically referred as "items" and are both objects (thus the "item" for the noun)
+
+items often have properties...
+
+items within container items, like folders/files inside a folder, are "child items"
+
+more clear layout:
+
+- verbs: apply to all items (files/folders) and to item properties (date stamps, read-only etc)
+ verb examples: clear, copy, get, move, new, remove, rename, set 
+ - item nouns: refer to individual objects (files/folders)
+ - ItemProperty noun: attributes and date created, read-only, length etc
+ - childitem noun: items within an item (subfolders/files)
+
+ even though the registry seems to have similarities with the files system
+ with registry keys and values being like folders/files
+the registry and other psproviders can be and often are quite different
+
+############# ############# The PS version of things ############# #############
+
+in place of "cd", PS uses set-location:
+set-location -Path c:\Windows
+
+similarly, in place of md/mkdir PS uses new-item:
+new-item testfolder
+
+the main reason to learn these generic PS versions of the commands is because
+they'll work on both the file system as well as other psproviders like the registry
+
+in contexts besides the file system characters like * and ? can be used in names etc
+to escape those instead of using them as wildcards the -literalpath paraemter is used
+
+############# ############# Using registery provider in particular ############# #############
+
+first we change the HKCU "drive" with set-location:
+
+"set-location -path hkcu:"
+
+then change the right location within that part of the registry:
+
+set-location -path software
+
+then the get-childitem
+
+I actually tried this with "cd" and "dir" and it seemed to have produced the same results
+so i guess it's not that big of a deal 
+
+when i did the dir/get-childitem it lets me know the context I'm in:
+
+Hive: HKEY_CURRENT_USER\Software
+
+so change the a specific location inside the registry: 
+
+cd Microsoft\Windows
+
+and chagne a specific key from 1 to 0 with set-ItemProperty:
+
+Set-ItemProperty -Path .\DWM\ -PSProperty EnableAeroPeek -Value 0
+
+i actually changed over to thinkcentre1 for a remote session:
+Enter-PSSession -ComputerName ThinkCentre1
+then did the same thing in the registry context and well i didn't get errors anyway 
+and the value of aeropeek is 0 now instead of 1 so i guess it's good
+
+I tried some random other PSproviders just to see what happens
+i wasn't sure how to do it at first but
+
+set-location variable:
+
+did apparently change me to the variable context
+just as
+set-location WSMan: 
+did indeed change my context to that, though in case of WSMan i didn't know how to do anything further
+
+I also learned that trailing colon is important as it won't work without it
+
+when i changed to the variable: context and did a dir i did get a bunch of variables
+no idea if these are the kind i can change. they seem system-related
+I'm sure I could look at the attributes of each to see which are read-only and which aren't 
+
+################################### chapter 6: pipelines
+
+this chapter seems as much about exporting to different formats as it is about piping 
+things to other things
+
+so it's obvious what's happening in this context:
+take output of get-process and "pipe it" into a csv file
+which PS is smart enough to know how to do automatically
+
+get-process | export-csv procs.csv
+
+Alright, that's cool 
+
+makes me wonder if i could tell invoke-command to do that to 3 different PCs at once and store the result locally
+sounds like literally the thing invoke-command was made for actually, so probably
+
+the inverse of course is import-csv
+
+there's also export-xml which seems similar to the csv one
+also it's technically "CliXML" format but close enough.
+so export-clixml and import-clixml are really the commands
+
+and compare-object (alias diff) 
+can be used to compare the local PC with the snapshot PC to see the difference
+
+example:
+diff -reference (import-clixml reference.xml) -difference (get-process) -property Name
+
+diff, as the object part implies, doesn't really do well with actual text files
+
+
