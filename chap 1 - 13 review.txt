@@ -277,3 +277,20 @@ diff -reference (import-clixml reference.xml) -difference (get-process) -propert
 diff, as the object part implies, doesn't really do well with actual text files
 
 
+there's also convertto-html, which as the name implies merely converts, different than exporting so that part has to done with pipes:
+get-service | converto-html | out-file services.html
+
+there's also convertto-xml and convertto-csv which is used in the smae way 
+
+the output produces the file in the right format instead to the screen and the different columns and amount of information can be customized
+
+############# killing/stopping processes
+
+the take away is cmdlets with same noun - like process - often match up each other
+as in getting and stopping a process:
+get-process -name notepad | stop-process
+same get could be said for cmdlets with service in the name
+stop/start/set-service
+
+################################### chapter 7: adding commands
+
