@@ -294,3 +294,10 @@ stop/start/set-service
 
 ################################### chapter 7: adding commands
 
+section 7.1 draws the similarities between PS and the "MMC Console" snap-in system. and how it kind of moved away from that.
+7.2 mentions product-specific managment shells. /skip/
+
+7.3 covers "PSSnappins" which is "something MS is moving away from. I think i on't worry about it.
+
+7.4 is about modules, where to find modules, where modules are stored by default...may be of interest later
+
