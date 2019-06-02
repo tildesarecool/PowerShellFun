@@ -301,3 +301,19 @@ section 7.1 draws the similarities between PS and the "MMC Console" snap-in syst
 
 7.4 is about modules, where to find modules, where modules are stored by default...may be of interest later
 
+7.7 just continues with modules and getting help for new modules. pretty standard stuff really
+
+7.8 is about having modules auto-load when PS opened. Which actually could be helpful in theory. at a later date. 
+not enough detail for it to really be worth mentioning right now
+
+7.9 is the first direct mention of the aptitude-equivalent package manager for PS v5 call installe 
+install-module
+actually it comes for nuget and a couple of other technologies
+but it talks about powershellgallery.com
+which isn't even the most popular repo and hasn't been for a while.
+it's got that it's mentioned though even if the few paragraphs aren't that useful
+
+and that's it. that's all for chapter 7
+
+################################### chapter 8: all about objects
+
