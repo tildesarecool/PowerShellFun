@@ -317,3 +317,113 @@ and that's it. that's all for chapter 7
 
 ################################### chapter 8: all about objects
 
+this seems to be more a conceptual/theoretical sort of chapter, at least first
+
+the get-process command contsructs a table in memory but not all the information in included in the output
+
+as defined by the book at least:
+
+a "table row" is an "object" e.g. a single process or service
+
+a table column is a "property/attributes". this is a piece of information about an object e.g. a porcdcess ID or service status
+
+an "action" is a "method" in object-speak such as killing a process or starting a service
+
+a colleciton - ais entire set of objects, collectivevly this is the entire table worth of output 
+
+these objects/properties/methods/collections are all together called "members" (everything is PS is singular, so get-member)
+
+the "advantage" of objects versus the text/grep way: getting a speficic process name and killing it
+in PS just involves getting the column number and telling it to kill that process
+no need to parse text line by line
+
+
+the command used to get more information on on an object is get-member (e.g. gm)
+
+the output of a pipe to GM will show some types of proprties including
+
+scriptproperty
+property
+noteproperty
+aliasproperty
+
+a property is there to contain a value
+a name property for instance might be notepad
+most properties are going to be read-only 
+
+methods may not need to be used directly as there are often cmdlets to perform those particular functions
+
+one example is killing a process:
+get-process -name notepad | stop-process
+vs
+stop-process -name notepad
+
+i think those are both the cmdlet method actually but lets say just use cmdlet method for now
+
+sorting objects...
+
+to sort processes but the biggest consumers of virtual memory, 
+the sort object would be used:
+get-process | sort-object -property -VM
+
+then a slight variant of the command to sort by descending:
+get-process | sort-object -property -VM -desc
+
+or another variant, by first virtual memory then by ID:
+get-process | sort-object -property -VM,ID -desc
+
+there's also select-object
+
+it takes in object via the pipeline, along with properties that should be displayed as output
+sort of a way of "trimming" down all the available information
+
+for instance this demonstrates the point:
+Get-Process | Select-Object -Property Name,ID,VM,PM
+
+
+the first example given for objects interacting is:
+get-process |
+sort-boject VM -desc |
+out-file c:\procs.txt
+
+this sends the output of get-process to sort object which sorts by VM descending
+then sends the output to a text file with out-file
+
+the next example does it a little differnetly in that 
+the first two steps are the same but
+select-object specifies only a few properties of the process object
+which effectively makes a new "custom object" called a PSObject.
+It copies over the properties specified for output to the PSObject:
+
+Get-Process |
+Sort-Object VM -Descending | 
+Select-Object Name,ID,VM
+
+the output of this won't be as nice as a normal get-process because PS doesn't have any formatting information on this newly
+generated PSObject. It tries to take a best guess
+
+The get-member for this isn't exactly as the book describes but gets the poit across:
+
+   TypeName: Selected.System.Diagnostics.Process
+
+Name        MemberType   Definition
+----        ----------   ----------
+Equals      Method       bool Equals(System.Object obj)
+GetHashCode Method       int GetHashCode()
+GetType     Method       type GetType()
+ToString    Method       string ToString()
+Id          NoteProperty int Id=8120
+Name        NoteProperty string Name=SearchUI
+VM          NoteProperty long VM=2238794711040
+
+
+it's really just trying at a best guess for the custom object
+
+
+tracking object types via gm is a good debugging/troubleshooting technique
+
+
+
+
+
+
