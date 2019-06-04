@@ -422,8 +422,90 @@ it's really just trying at a best guess for the custom object
 
 tracking object types via gm is a good debugging/troubleshooting technique
 
+################################### chapter 9: Piping 2: the pipening (also pipeline parameter bindng)
+
+using "command A" as the first command 
+and
+"command B" as the second one 
+for reference...
+
+When two cmdlets are piped together PS has to figure out how to get the output of the first to the input of the second 
 
 
+example:
 
+with a text file of PC names, one per line, called computers.txt
 
+this command:
+get-content .\computers.txt | get-service
 
+takes a computer from the text file on places it on the pipe line 
+
+but PS has to figure out how to get that get-content output over to get-service 
+that process of figuring out how to do that is "pipeline prameter binding"
+
+PS has two methods of of getting the output of get-content on to a parameter of get-service:
+
+ByValue
+and
+ByPropertyName
+(these are both types of parameter binding)
+
+9.3: Piping by value
+
+########### ByValue
+
+PS will look at the object produced by command A and see whether any parameter of command B can acceptable
+that object type
+
+this can be determined manually by piping command A to GM and comparing this to the "-full" of the help for command B
+
+in the get content example, get-content is producing objects of type system.string (or just "string") 
+
+looking at the help for get-service show that there is a name pameter and it is does accept string input by value
+
+but looking at the help this name paraemter actually refrrs to service names, not PC names
+so the sample command would be sending computer names in to a service name parameter 
+
+Only one paraemter can accept a given type of object from the pipeline ByValue
+
+that means that -name parameter of get-service is the only one that can accept the string byvalue via the pipeline 
+
+########### another example (still byvalue)
+
+get-process -name note* | stop-process
+
+doing the same pipe to gm/full help comparison
+
+get-process produces objects of system.Diagnostics.process
+stop-process can accept that kind of object from the pipeline byvalue via it's -inputobject parameter  
+this would indicate that command A retrieves the process objects while command b can take those objects and kill them
+
+this also helps to keep in mind that cmdlets that share the same noun (the -process part) can usually pipe to each other 
+
+########### yet another example (switching to ByPropertyName)
+
+get-service -name s* | stop-process
+
+this doesn't make sense on the fface of it because of the mixture of services with processes...
+
+get-service produces objects of serviceController type but stop-process doesn't have any parameters that accept 
+serviceController objects
+
+this is where the "fall back" of ByPropertyName comes in
+
+doing the standard GM of command A for comparison with the full help of command B
+shows that there is one parameter whose name corresponds to a paremeter with command B
+
+THE BOOK EMPHASIZES  THAT THE ONLY THEING ACTUALLING HAPPENING HERE IS A NAME MATCH BETWEEN A PROPERT NAME AND A PARAMETER NAME
+a very simple character match with one to the other and that's it
+
+this is of course limited by whether or not the "accept pipeline input" line is both true and "ByPropertyName" is listed
+
+since this is in fact the case between get-service and stop-process...
+the connection is possible...
+
+Having said all that even though there's a name/name match between property and -name the second one is expecting something else 
+entirely (process names) then what the first one is sending over (service names)
+
+(pg. 108)
