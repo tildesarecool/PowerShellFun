@@ -559,3 +559,4 @@ this is tied tied together with the Expression or "E" that uses $_. to access ob
 there's some syntax to it of course. I already took notes on that and it's kind of tricky. This seems useful though.
 
 (sect 9.6)
+
