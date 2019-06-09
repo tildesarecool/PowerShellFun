@@ -560,3 +560,40 @@ there's some syntax to it of course. I already took notes on that and it's kind 
 
 (sect 9.6)
 
+paranthetical commands
+
+this is going to use the get-wmiobject command as exmaple...
+
+the -computername parameter does not accept pipeline input
+
+the normal feeding of a text file of pc names via get-content into get-wmiobject wouldn't work 
+
+To get around this parantheses can be used instead:
+get-wmiobject -class win32_BIOS -computername (get-content .\computers.txt)
+
+this will only work if the commands in parantheses are generated the exact type of objects the paramter expects (like a host name as a string)
+
+(9.7)
+
+To get around the paranthetical limitation of objects matching up:
+
+switch to get-adcomputer cmdlet as an example:
+get-adcomputer is producing objects of type adcomputer while the -computername paraemters wants a string value
+so what is needed is extracting the objects name from the name property and using that as the -computername string
+
+this extraction can be done via the -expandproperty of select-object 
+for instance:
+get-adcomputer -filter * searchbase "ou-domain controllers, dc=company,dc=pri" | select-object -expand name 
+
+this command should output a list of pc names
+
+this can then be fed into the -computername paraemeter of for instance get-service or any other cmdlet that has -computername parameter:
+get-service -computername (get-adcomputer -filter * searchbase "ou-domain controllers, dc=company,dc=pri" | select-object -expand name ) 
+
+another example: select-object and the -expandproperty parameter 
+
+this example example will extract the "hostname" portion of get-process and effectively use that with -computername with get-process:
+get-process -computername (import-csv .\computers.csv | select -expand hostname)
+
+this was all to get the string value of computer names out of an object or to an object. it seems like converting between data types.
+string to object or object to string. seems somehow unnecessary 
