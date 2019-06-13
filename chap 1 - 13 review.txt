@@ -597,3 +597,21 @@ get-process -computername (import-csv .\computers.csv | select -expand hostname)
 
 this was all to get the string value of computer names out of an object or to an object. it seems like converting between data types.
 string to object or object to string. seems somehow unnecessary 
+
+
+################################### chapter 10: formatting (ughh)
+
+it's hard to get excited about this chapter about formatting things
+
+I think I can take what i learned in chapter 9 an d apply it tables. probably
+
+okay i guess there's formatting lists and wide lists
+
+there's some custom entries using that same weird layout of @ signs and curly brackets
+
+there does seem to be some emphasis on making formatting to the right or "format right"
+
+and that's chapter 10. they I wish 10 were anywa. moving on
+
+################################### chapter 11
+
