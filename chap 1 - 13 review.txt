@@ -613,5 +613,37 @@ there does seem to be some emphasis on making formatting to the right or "format
 
 and that's chapter 10. they I wish 10 were anywa. moving on
 
-################################### chapter 11
+################################### chapter 11: filtering/comparisons
+
+two models of filtering both called filtering
+
+the first model, filtering, the cmdlet is instructed to retrieve only 
+what is specified 
+
+in the second model, filtering, an iterative approach is taken to bring in 
+everything from a cmdlet and use a second cmdlet to filter out the things
+that are not needed
+
+ideally the first model, filtering, is ideal. 
+this is called "early filtering"
+
+in early filtering you could something like
+get-service -name e*,*s*
+but this wouldn't help if out of these results you only wanted running services since
+no parameter of the cmdlet provides for that
+
+
+what may or may not be another name for "early filtering" is "filtering left"
+this is just putting in filtering criteria as far to the left of the command
+as possible
+this is to only matching objects are retreived, minimizing the amount of data
+transmitted over the network
+
+the downside of filtering left is the customized filter techniques across different cmdlets
+(get-service being different from get-wmiobject for instance)
+
+a generic where-object cmdlet can be used with generic syntox but this all still requires
+a steeper learning curve on how various cmdlets operate
+
+
 
