@@ -607,7 +607,7 @@ I think I can take what i learned in chapter 9 an d apply it tables. probably
 
 okay i guess there's formatting lists and wide lists
 
-there's some custom entries using that same weird layout of @ signs and curly brackets
+there's some custom entries using that same weird notation of @ signs and curly brackets
 
 there does seem to be some emphasis on making formatting to the right or "format right"
 
@@ -642,8 +642,45 @@ transmitted over the network
 the downside of filtering left is the customized filter techniques across different cmdlets
 (get-service being different from get-wmiobject for instance)
 
-a generic where-object cmdlet can be used with generic syntox but this all still requires
+a generic where-object cmdlet can be used with generic syntax but this all still requires
 a steeper learning curve on how various cmdlets operate
 
+(11.3)
 
+this is wehre comparison operators and booleans come in
+
+there's eq/ne for equality
+ge/le for <= =>
+and
+gt/lt for > and <
+
+there's also the case sensitive equivalents
+just a c in front of them:
+ceq, cne, cgt, cge, and cle    
+
+and as before the parantheses give that expression priorirty
+
+there's also a -not operator for reversing true/false
+
+using $_. as a place holder, this would test whether a process isn't responding:
+$_.responding -eq $False
+
+this also would work 
+-not $_.Responding
+
+and -not can be abbreviated as !
+
+there's also like/clike and cnotlike for case sensitive 
+
+also match/cmatch, mainly used with regular expressions
+
+(11.4)
+
+these operators can be used:
+with cmdlets who have a filter parameter
+
+and also the where-object filtering cmdlet
+
+example:
+get-service | where-object -filter { $_.Status -eq 'Running' }
 
