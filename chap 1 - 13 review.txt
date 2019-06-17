@@ -684,3 +684,17 @@ and also the where-object filtering cmdlet
 example:
 get-service | where-object -filter { $_.Status -eq 'Running' }
 
+how this works:
+the objecte is piped to where object
+which exmines each object one at a time using its filter 
+each object is placed on at a time into the position of the $_. placeholder
+and runs the comparison to see if matches the true or false condition
+
+when true the object continues down the pipe to the next cmdlet in the pipeline
+in the above that would be the implied "out-default" cmdlet that puts text on the screen
+
+the $_ placeholder can only be used in certain contexts 
+the . tells PS you want to access a property of a an object
+and not do a comparison 
+
+(11.5)
