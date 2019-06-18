@@ -698,3 +698,53 @@ the . tells PS you want to access a property of a an object
 and not do a comparison 
 
 (11.5)
+
+the concept of "PSICLM"
+powershell interative command-line model 
+
+the idea of PSICLM is that there is no need
+for large complex command lines all at once from scratch
+it is better to "start small"
+
+example:
+constructing a list of the 10 largest consumers of 
+virtual memory - processes - not including PS itself
+
+take an inventory of what needs to happen:
+
+1. get process list
+2. filter out anything related to PS
+3. sort processes by virtual memory consumed
+4. keep the 10 needed
+5. add up virtual memory for whatever is left
+
+the first step is obvious with 
+get-process
+
+next is filtering out what is not wanted:
+get-process | where-object -filter { $_.Name -notlike 'powershell*' }
+
+next is sorting by vm consumed, a variation of above:
+get-process | where-object -filter { $_.Name -notlike 'powershell*' } | sort VM descending 
+
+now just the 10:
+get-process | where-object -filter { $_.Name -notlike 'powershell*' } | sort VM descending  | select -first 10
+
+and finally the last part:
+get-process | where-object -filter { $_.Name -notlike 'powershell*' } | sort VM descending  | select -first 10 | measure-object -property VM -sum
+
+(11.6.1)
+
+this section just emphasizes that filtering should be as far to left in the command as possible 
+and also to do filtering close to the data as possible
+
+(11.6.2)
+
+is a short review of the $_. place holder. I think i get this about as well as I am going to really
+
+that's it for chapter 11
+
+################################### chapter 12: practical interlude
+
+not sure what i'm going to review in this chapter. it's short though so either way it won't take long
+
