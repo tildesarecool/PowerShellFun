@@ -780,3 +780,5 @@ finding a promising one, it was installed and the help contents examined
 4. the help file was utilized and the command was successfully interpreted and run for the task
 5. the task was completed
 
+################################### chapter 13: remote control
+
