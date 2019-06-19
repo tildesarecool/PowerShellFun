@@ -748,3 +748,35 @@ that's it for chapter 11
 
 not sure what i'm going to review in this chapter. it's short though so either way it won't take long
 
+this chapter is all about finding the best methods of learning new things
+as they are introduced to powershell as needed
+
+the task is defined as "modifying a default user privilege" which is kind of vague
+
+first tehre's some things about finding some privilege-related commands
+with help *privilege*
+then moving on to get-command -noun *priv*
+then finally find-module *privilege* | format-table -auto
+which goes out a repository to get a specific cmdlet called PoshPrivilege
+and install via:
+install-module PoshPrivilege
+
+then it's a matter of getting help with the newly installed PoshPrivilege cmdlet
+
+through get-command and help
+
+so help is effectiviely retreived through the help system and command is issued, completing the task
+
+the command is
+add-privilege -accountname administrators -privilege sedenybatchlogonright
+
+the review of the steps:
+
+1. started with searching local help files for specific related keywords.
+when nothing marched the terms, the further all help files contents was searchbase
+2. then speicific command  names were searched. 
+3. with nothing local found, the repo was searched for possible modules that could be added
+finding a promising one, it was installed and the help contents examined
+4. the help file was utilized and the command was successfully interpreted and run for the task
+5. the task was completed
+
