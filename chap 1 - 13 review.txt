@@ -782,3 +782,28 @@ finding a promising one, it was installed and the help contents examined
 
 ################################### chapter 13: remote control
 
+There's a system-wide system called remoting 
+
+this system allows for running any cmdlet (really?) on a remote PC 
+even commands that exist on remote pc but not on local one
+
+PS uses a protocol called Web services for management or WS-MAN 
+
+WS-MAN operates entirely over http/s 
+
+The background service WinRM is the form that WS-MAN comes in 
+
+WinRM is enabled by default on windows server (2012 at least)
+
+this is the part that gets a little mercie 
+
+when output objects are transmitted back and forth over the network
+the objects are converted to XML form, transmitted, then re-constituted into objects 
+
+this mainly means these serialized/deserialized objects are mroe snapshots of the status of that 
+object at the time it was transmitted, not as a live changing thing 
+
+this means CPU utilization can't be monitored live nor can services be told to stop 
+
+(13.2)
+
