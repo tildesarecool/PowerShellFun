@@ -807,3 +807,31 @@ this means CPU utilization can't be monitored live nor can services be told to s
 
 (13.2)
 
+WinRM overview
+
+WinRM acts as a dispatcher 
+traffic will to which application needs to deal with that traffic
+traffic is tagged with the recipient application 
+the applications have to register with WinRM as "endpoints" so that 
+winrm will listen for the incoming traffic
+even powershell has to register with WinRM as an endpoint
+
+any given endpoint can have multiple endpoints 
+by default, WinRM created listeners will listen on all local IP addresses on the default port 
+
+the command to enable is enable-psremoting
+
+enable-psremoting runs "set-wsmanquickconfig" so there is no need to run it separately
+
+enable-psremoting will:
+register ps as endpoint service 
+configure it to start automatically 
+setup a windows firewall exception for incoming WinRM traffic
+
+one source of errors is a network classified as a "public" network rather than "home" or "work"
+this has to do with how the firewall rules work 
+
+(13.3)
+
+commands are 
+enter-pssession and exit-pssession, one-to-one remoting 
