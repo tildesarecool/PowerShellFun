@@ -807,7 +807,7 @@ this means CPU utilization can't be monitored live nor can services be told to s
 
 (13.2)
 
-WinRM overview
+WinRM overview  
 
 WinRM acts as a dispatcher 
 traffic will to which application needs to deal with that traffic
