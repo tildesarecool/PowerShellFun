@@ -835,3 +835,4 @@ this has to do with how the firewall rules work
 
 commands are 
 enter-pssession and exit-pssession, one-to-one remoting 
+
