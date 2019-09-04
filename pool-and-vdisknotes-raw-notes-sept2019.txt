@@ -1,0 +1,748 @@
+New-StoragePool –FriendlyName "WinStorePool" –PhysicalDisks (Get-PhysicalDisk PhysicalDisk1, PhysicalDisk2,PhysicalDisk3 ) –StorageSubSystemFriendlyName *Store*
+
+
+
+New-VirtualDisk –StoragePoolFriendlyName "WinStorePool" –FriendlyName VDisk1 –NumberOfColumns 1 –ProvisioningType Fixed –ResiliencySettingName Simple -UseMaximumSize
+
+
+
+https://docs.microsoft.com/en-us/powershell/module/storage/new-storagepool?view=win10-ps
+This line creates a new storage pool using the $PhysicalDisks variable to specify the disks to include from the WindowsStorage subsystem (specified with a wildcard * to remove the need to modify the friendly name for different computers).
+PS C:\> New-StoragePool -FriendlyName CompanyData -StorageSubsystemFriendlyName "Windows Storage*" -PhysicalDisks $PhysicalDisks
+
+
+
+
+The first line ($PhysicalDisks =...) gets the storage subsystem object for the Windows Storage subsystem, passes it to the **Get-PhysicalDisk** cmdlet, which then gets the physical disks in the specified subsystem that are available to add to a storage pool, and assigns these disks to the $PhysicalDisks variable.
+
+The second line of the command has five parts, connected by the pipeline (|). The first part (New-StoragePool...) creates a new storage pool using the physical disks in the $PhysicalDisks variable, and then passes the new storage pool down the pipeline. All of the following commands are logically part of one command and should be entered as such.
+
+The second part (New-VirtualDisk...) creates a new virtual disk on the passed in storage pool and then passes the new virtual disk down the pipeline.
+
+The third part (Initialize-Disk...) initializes the disk that was passed in, and then passes the disk down the pipeline.
+
+The fourth part (New-Partition...) creates a new partition on the disk that was passed in, assigns it the next available drive letter, and then passes the partition down the pipeline.
+
+The final part of the command (Format-Volume) formats the partition that was passed in.
+
+$PhysicalDisks = Get-StorageSubSystem -FriendlyName "Windows Storage*" | Get-PhysicalDisk -CanPool $True 
+
+New-StoragePool -FriendlyName "CompanyData" -StorageSubsystemFriendlyName "Windows Storage*" -PhysicalDisks $PhysicalDisks |New-VirtualDisk -FriendlyName "UserData" -Size 100GB -ProvisioningType Thin |Initialize-Disk -PassThru |New-Partition -AssignDriveLetter -UseMaximumSize |Format-Volume
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+
+
+New-StoragePool -FriendlyName WinStorePool -StorageSubsystemFriendlyName "Windows Storage*" -PhysicalDisks $PhysicalDisks -ResiliencySettingNameDefault Parity -ProvisioningTypeDefault Fixed -Verbose -LogicalSectorSizeDefault 4096 -FaultDomainAwarenessDefault PhysicalDisk
+
+
+-LogicalSectorSizeDefault 4096
+
+
+
+-FaultDomainAwarenessDefault PhysicalDisk
+
+
+-ResiliencySettingNameDefault Parity
+
+
+
+
+1:38 PM 8/31/2019
+this worked to create to pool:
+New-StoragePool -FriendlyName WinStorePool -StorageSubsystemFriendlyName "Windows Storage*" -PhysicalDisks $PhysicalDisks -ResiliencySettingNameDefault Parity -ProvisioningTypeDefault Fixed -Verbose -LogicalSectorSizeDefault 4096 -FaultDomainAwarenessDefault PhysicalDisk
+
+using server manager i removed physical disk 4 and added it back as a "hot spare"
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+virtual disk...
+
+1:48 PM 8/31/2019
+
+already made pool "parity". not sure if both disk and pool should be parity. or if it matters. or maybe
+pool should have been simple and disk should have been parity
+
+unclear on values for this. i think just an integer. so i'll go with 1 for "virtual disk can telerate 1 failed physical disk"
+-PhysicalDiskRedundancy 1
+
+-ProvisioningType fixed
+
+
+for this i was going to use 4 instead of 5 so i can see if it lets me add one
+-PhysicalDisksToUse 4
+
+
+again, unclear on necessity
+-ResiliencySettingName Parity
+
+i assume this will make it easy
+-UseMaximumSize
+
+
+
+
+original virtual disk line from that blog
+New-VirtualDisk –StoragePoolFriendlyName "WinStorePool" –FriendlyName VDisk1 –NumberOfColumns 1 –ProvisioningType Fixed –ResiliencySettingName Simple -UseMaximumSize -PhysicalDiskRedundancy 1 
+
+
+
+i think it would be better to just leave this resiliency as simple
+
+
+
+ended up using this line
+
+New-VirtualDisk -StoragePoolFriendlyName "WinStorePool" -FriendlyName VDisk1 -NumberOfColumns 1 -ProvisioningType Fixed -ResiliencySettingName Simple -UseMaximumSize
+
+the physical disk reduencancy was never going to work
+and that number of disks to use even if i had the right information for would not have worked either
+
+
+
+
+as experiment, before initilizing the disk to make a volume/drive letter/format, 
+I removed one disk from the pool
+then created the volume and formatted
+then tried to add the disk back to pool but it wouldn't give me the option
+so i set the disk to offline
+then it would let me add the disk to the pool
+and i was able to "extend" the volume
+
+I had to extend the volume and the virtual disk before the new volume size would show up
+and finally bring the disk back online
+
+
+my next experiment i will leave some data on the volume (I called it S:)
+and then power off the server and physically pull out a disk sled
+and see if the hot spare does anything or if that is not worth bothering with
+
+
+
+
+first i wanted to run "optimize storage pool" just to see what happens
+Optimize-StoragePool -FriendlyName WinStorePool
+it's supposed to "rebalance" the content of the pool. i'm not sure what it will do in this context
+or what it did
+there is about 100MB worth of data on there but
+well i ran it and there was just a progress bar there for a second and it stopped
+so really i have no idea
+
+
+okay now i'll try the physical remove thing
+only problem not sure which physical disk is the hot spare
+the get-physical disk cmdlet says the SSD is 0
+and the "hot spare" disk is disk 5
+there is a serial number actually
+if i wanted to not remove the hotspare but
+but say disk 4
+the end of that sn is 04169 and it's a WD 1TB
+
+after removing the physical disk and powering it back up
+none of the disks are flagged as "hot spare"
+and the disk that's missing has a yellow exclamation point next to it
+but i can't remove the "failed" disk from the pool
+it only says to delete the virtual disk first
+seems like that kind of defeats the purpose of a "hot spare"
+
+i tried taking the virtual disk offline
+and detatching it
+but it doesn't seem to make a difference:
+---------------------------
+Remove Physical Disk
+---------------------------
+This physical disk is used by one or more virtual disks that use the Simple (no resiliency) layout. To remove this physical disk, delete the following virtual disks: VDisk1
+---------------------------
+OK   
+---------------------------
+
+
+so /apparently/ i should have made the virtual disk with resiliency/parity. still not sure if both pool and vdisk
+should be made with resiliency but i'm leaning toward not
+also not sure if hot spare is worth bothering with
+
+
+I tried 
+Repair-VirtualDisk -FriendlyName VDisk1
+to see if it would help. i doubt it. worth a shot.
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+2:03 PM 9/1/2019
+
+i re-inserted the removed hdd
+the pool and vdisk both came back to healthy
+the disk previously designated hot spare was had a value of "retired" in the "usage" column
+
+
+i watched this video
+https://www.youtube.com/watch?v=Sp6OW5Xx7jA
+he used the server manager wizard to create the pool
+he DIDN'T use parity for the pool (also didn't specify hot spare in pool)
+and DID use the parity for the vdisk
+
+i think it may be possitlbe to later set the "usage" attribute to "hot spare"
+also, I don't think "hot spare" means what I think it means
+
+on the vdisk part he made a pretty good case for thin provisioned disks:
+can specify smaller size then the max
+and as data is added it will expand/grow
+
+
+
+
+also talks about storage tiers" a little
+
+
+
+i saw elsewhere the "Friendly name" of the hdds can be set
+so i could hypothetically set the disk as "slot 0" or whatever
+that could be helpful
+
+
+
+3:09 PM 9/1/2019
+I am going to modify this line so I am only using 3 disks and non-parity/no hotspares 
+
+(original)
+New-StoragePool -FriendlyName WinStorePool -StorageSubsystemFriendlyName "Windows Storage*" -PhysicalDisks $PhysicalDisks -ResiliencySettingNameDefault Parity -ProvisioningTypeDefault Fixed -Verbose -LogicalSectorSizeDefault 4096 -FaultDomainAwarenessDefault PhysicalDisk
+
+new/modified
+I am going to have to either write out each friendly name of disk i want to use or re-define that $PhysicalDisks variable
+i could probably go by device ID instead, just 1, 2 and 3
+they're all 1TB and i'm just manually looking to see that they all say their "canpool" is true
+
+based on the prior line to define that variable, I first run 
+Get-StorageSubSystem
+to see the name of my sotrage sub system:
+Windows Storage on 2k19r520
+
+So i use this to construct the first part of the variable:
+
+
+$PhysicalDisks = Get-StorageSubSystem -FriendlyName "Windows Storage*"
+
+I ended up going on something of wild goose chase so i could use a variable for the disks i wanted to use to start in the pool
+I just wanted 3 of them and the 1TB ones 
+not sure how long it took but here's what i came up with:
+
+$PhysicalDisks = Get-PhysicalDisk -CanPool $True | Where-Object -filter { $_.DeviceID -lt 5 } | sort  descending |select -last 3
+
+this will show disks with ID 1, 3 and 4 all of which are 1TB
+
+
+so NEW storage pool line:
+New-StoragePool -FriendlyName WinStorePool -StorageSubsystemFriendlyName "Windows Storage*" -PhysicalDisks $PhysicalDisks 
+
+I decided to simplify it a little this time. I don't think i even need that resiliency specification. I'll just leave
+on the defaults and hope the defaults will work.
+
+THIS COMMAND APPARENTLY WORKED
+
+
+now for the virtual disk. This one will get interesting.
+I think I'm going to go for "thin" this time and obviously parity
+
+here is ORIGINAL virtual disk line from above:
+New-VirtualDisk -StoragePoolFriendlyName "WinStorePool" -FriendlyName VDisk1 -NumberOfColumns 1 -ProvisioningType Fixed -ResiliencySettingName Simple -UseMaximumSize
+
+and this is the NEW virtual disk line:
+New-VirtualDisk -StoragePoolFriendlyName "WinStorePool" -FriendlyName VDisk1 -NumberOfColumns 1 -ProvisioningType Thin -ResiliencySettingName Parity 
+
+
+
+New-VirtualDisk -StoragePoolFriendlyName "WinStorePool" -FriendlyName VDisk1 -NumberOfColumns 1 -ProvisioningType Fixed -ResiliencySettingName Parity -UseMaximumSize
+
+
+
+no matter what i did i couldn't get the columns=1 thing to work
+so looking the examples of "new virtudisk" online documentation (https://docs.microsoft.com/en-us/powershell/module/storage/new-virtualdisk?view=win10-ps) 
+I finally up with this one
+And this one DID WORK
+yaaaa
+
+New-VirtualDisk -StoragePoolFriendlyName "WinStorePool" -FriendlyName VDisk1 -ResiliencySettingName Parity  -Size 2TB -ProvisioningType thin -PhysicalDiskRedundancy 1
+
+the main tests i want to run include - after putting some data in - simulating a "fail" of a disk and seeing if it's possible
+to add a hdd later
+and since i specified 2TB of initial size i should probably see if i can expand that.
+
+
+in server manager under storage pools it says the capacity is 2.73TB while the freespace is 2.72 TB
+I will probably just specify 2.5TB and go from there
+
+First i will create the volume and format it as NTFS
+
+first i brought the vdisk to "online"
+it's showing with disk ID of 6
+
+once formatted i copied in some data (my "repos" folder, it's about 100MBs)
+
+
+attempting to expand virtual disk from 2TB to 2.2TB
+it apparently worked without issue
+data is still intact
+although looking at S: volume on the server itself
+it still says the capacity is 1.99TB
+I'm not sure if that's because the .2 isn't significant enough
+or if there's someting else i have to do for it acknowledge the space
+
+in server manager
+under "disks" at left
+in the upper frame that lists all the disks with the disk numbers
+the capacity of the vdisk is indeed "2.2TB"
+But in the lower pane under "volumes"
+the capacity remains at "2TB"
+So I guess I have to "extend" it in both places
+and this apparently worked
+so first "extned virtual disk
+then it's possible to "extend volume"
+and this is indeed expressed on the server itself
+with a new capacity of 2.19TB
+and data is still intact
+
+now i will try removing one of the drives
+just removing the only one of the 3 that is samsung will make it easier
+device id 3
+sn S13PJDWQ728900
+
+powered off server/removed samsung 1TB drive
+powered back up
+the storage pool and vidsk both are showing the famous yellow exclamation
+but actually the S: drive is still there
+and the data is intact
+which is exactly what i wanted: resiliancy from a single disk fail
+so now i will try adding in one of the previously unused 1TB disks
+I added the disk successfully but the pool/vdisk is still in degraded/incomplete status
+
+so i will now attempt to remove the samsung
+
+This gave me an error about needing a replacement disk
+which I thought i did
+
+---------------------------
+Remove Physical Disk
+---------------------------
+The selected physical disk cannot be removed.
+
+Before removing a physical disk, you must add a replacement physical disk to the storage pool.
+
+The replacement disk must be set to Automatic allocation, be equal in size or larger than the used space on this physical disk, and must not contain any part of a virtual disk.
+---------------------------
+OK   
+---------------------------
+
+/somehow/ i managed to get the non-existant samsung out the pool and off the list
+along with adding the other 1TB disk to pool
+not even sure i could reproduce that actually
+i know i flagged the samsung as "retired" with this
+Set-PhysicalDisk -FriendlyName "ATA SAMSUNG HD103UJ" -Usage Retired
+then i tried the "update storage pool" (and answered 'y')
+Update-StoragePool -FriendlyName "WinStorePool"
+
+i then attempted to remove the disk through server manager
+it went through progress bar window
+and said successful
+but the window actually got stuck
+i couldn't get around or close the window
+so after 45 minutes or so i finally did an "end task" on server manager
+and now both the pool and the vdisk are showing as healthy
+and data is intact
+
+now just have to try adding the samsung back
+as well as the 2TB hitachi
+so how well it deals
+
+
+one idea is actually to add the samsung back to the pool and flag it as a hotspare
+then physically remove one of the other disks
+and re-flag the hotspare as "auto select"
+to see if it auto-picks it up
+
+
+i re-inserted the samsung, deviceID 3, and it came up as unhealthy:
+DeviceId FriendlyName            SerialNumber    MediaType   CanPool OperationalStatus           HealthStatus Usage
+-------- ------------            ------------    ---------   ------- -----------------           ------------ -----
+3        ATA SAMSUNG HD103UJ     S13PJDWQ728900  Unspecified False   {Unrecognized Metadata, OK} Unhealthy    Unknown
+
+
+I tried reset disk:
+Reset-PhysicalDisk -FriendlyName "ATA SAMSUNG HD103UJ"
+
+this came back with a normal "operational status" - healthy - but the "mediatype" was still "unspecified"
+so I set this:
+Set-PhysicalDisk -FriendlyName "ATA SAMSUNG HD103UJ" -MediaType HDD
+
+
+i'm going to try adding the disk with PS instead of server manager
+
+
+$PDToAdd =  Get-PhysicalDisk -FriendlyName "ATA SAMSUNG HD103UJ"
+Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
+
+
+
+this has apparently added the disk to the pool successfully
+now i have to add the disk to the vdisk
+
+
+this is a variation of the sample on the MS docs site
+i'm sure this will work
+
+Add-PhysicalDisk -VirtualDiskFriendlyName VDisk1 -PhysicalDisks $PDToAdd
+apparently not
+
+
+i'll try this one instead
+Add-PhysicalDisk -VirtualDiskFriendlyName VDisk1 -PhysicalDisks (Get-PhysicalDisk -FriendlyName "ATA SAMSUNG HD103UJ")
+that didn't work either
+
+
+$PDToAdd = Get-PhysicalDisk -FriendlyName "ATA SAMSUNG HD103UJ"
+Add-PhysicalDisk -PhysicalDisks $PDToAdd -VirtualDiskFriendlyName VDisk1
+
+
+
+upon re-looking at server manager, i realize now that vdisk1 already has four disks
+not sure when that happened or if it was one of my commands or i inadvertently used server manager
+either way though it has all 4 disks now
+
+now i need to extend both the volumn and the disk so it at least sees to possibility of the new size
+
+
+so i'll try this with PS as well because why not
+
+
+i think this cmdlet will work
+Resize-VirtualDisk -FriendlyName "Sqldata5" -Size (25GB)
+
+currently the vdisk is at capacity of 2.2TB
+and the storage pool says it has a capacity of 3.63TB
+so i'm going to raise it a little to 2.6TB
+
+Resize-VirtualDisk -FriendlyName "Vdisk1" -Size (2.6TB)
+
+this has apparently worked and Get-VirtualDisk is in fact coming back with size of 2.6TB
+
+so next i have to extend the actual volume
+
+the closest command i can find is Resize-Partition
+
+this one has a weird example so i'm just going to base it partially on the vdisk example
+Resize-Partition 
+
+
+first i used get-partition to figure which partition i wanted to target and set that to a variable:
+$SetPartToSize = Get-Partition -DriveLetter S
+
+
+not sure this will work
+Resize-Partition $SetPartToSize -size (2.5TB)
+apparently it really wants an integer
+so I used get-disk to figure out the vdisk is disk 6
+so
+Get-Partition -DiskNumber 6 -PartitionNumber 2
+returns the right partition and only that partition
+
+to put it all together:
+Resize-Partition -DiskNumber 6 -PartitionNumber 2 -size (2.5TB)
+
+amazingly enough this DID work
+
+so now the vdisk is 2.6TB and the S: drive is 2.5TB
+the pool and therefore the vdisk having a hypothetical limit of 3.64TB or so
+
+and indeed as reported on the server itself the S: is now 2.5TB and the data is still intact
+
+
+what i would like to do as an experiment is set one of the physical disks "usage" from "auto-select" to "hotspare"
+but i'm not sure if it can do that on the fly or if I have to remove the physical disk from the virtual disk
+at the very least
+
+
+i think i'll just try it and see what happens. i'm assuming it won't work this way
+Set-PhysicalDisk -FriendlyName "ATA SAMSUNG HD103UJ" -Usage Hotspare
+actually this is did work and it did come back with status "hot spare" and there are no errors
+
+here's the current output of get-physicaldisk:
+
+PS C:\Users\keith> Get-PhysicalDisk
+
+DeviceId FriendlyName            SerialNumber    MediaType CanPool OperationalStatus HealthStatus Usage            Size
+-------- ------------            ------------    --------- ------- ----------------- ------------ -----            ----
+3        ATA SAMSUNG HD103UJ     S13PJDWQ728900  HDD       False   OK                Healthy      Hot Spare   931.51 GB
+4        ATA WDC WD10EARS-00Y    WD-WCAV55704169 HDD       False   OK                Healthy      Auto-Select 931.51 GB
+0        WDC  WDS500G2B0A-00SM50 191466802592    SSD       False   OK                Healthy      Auto-Select 465.76 GB
+2        ATA Hitachi HDS5C302    MCE7215P0KMLAW  HDD       True    OK                Healthy      Auto-Select   1.82 TB
+5        ATA WDC WD1001FALS-0    WD-WMATV8678792 HDD       False   OK                Healthy      Auto-Select 931.51 GB
+1        ATA WDC WD1001FALS-0    WD-WMATV8730079 HDD       False   OK                Healthy      Auto-Select 931.51 GB
+
+if i physically remove disk designated deviceid 4, i should then be able to set deviceID 3 from "hot spare" to "auto-select"
+and possibly the array will recover
+
+
+after the disk was physically removed:
+
+DeviceId FriendlyName            SerialNumber    MediaType CanPool OperationalStatus  HealthStatus Usage           Size
+-------- ------------            ------------    --------- ------- -----------------  ------------ -----           ----
+3        ATA SAMSUNG HD103UJ     S13PJDWQ728900  HDD       False   OK                 Healthy      Auto-Select ...51 GB
+         ATA WDC WD10EARS-00Y    WD-WCAV55704169 HDD       False   Lost Communication Warning      Retired     ...51 GB
+0        WDC  WDS500G2B0A-00SM50 191466802592    SSD       False   OK                 Healthy      Auto-Select ...76 GB
+2        ATA Hitachi HDS5C302    MCE7215P0KMLAW  HDD       True    OK                 Healthy      Auto-Select  1.82 TB
+4        ATA WDC WD1001FALS-0    WD-WMATV8678792 HDD       False   OK                 Healthy      Auto-Select ...51 GB
+1        ATA WDC WD1001FALS-0    WD-WMATV8730079 HDD       False   OK                 Healthy      Auto-Select ...51 GB
+
+so apparently disk 3 auto-flagged itself over to "auto-select" without me
+and the disconnected one auto-set to "retired"
+
+
+so now to remove the retired one
+by "friendly name" using
+Remove-PhysicalDisk 
+
+which can remove from both the vdisk and the storage pool
+not sure which to do first though
+though I would assume it's in reverse order of adding it
+which i think would be 
+remove from vidsk
+then
+remove from storage pool
+but i could wrong about that
+
+
+Remove-PhysicalDisk -VirtualDiskFriendlyName "Vdisk1" -PhysicalDisks (Get-PhysicalDisk -Friendlyname "ATA WDC WD10EARS-00Y")
+and of course this didn't work
+so i'll just do the storage pool instead
+
+
+Remove-PhysicalDisk -StoragePoolFriendlyName "WinStorePool" -PhysicalDisks (Get-PhysicalDisk -Friendlyname "ATA WDC WD10EARS-00Y")
+
+apparently this /did/ work
+
+and data...remains intact
+
+as random experiment i tried setting the vdisk 1 size to 50TB and...it worked
+so theoretically i could...start adding 10TB disks into this pool/vdisk
+while removing the smaller ones
+i'll save that for tomorrow
+not sure it's a good idea actually
+i probably want to start over from scratch and really dial in the commands
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+2:03 PM 9/2/2019
+
+
+I re-inserted disk 4
+came up with status:
+4        ATA WDC WD10EARS-00Y    WD-WCAV55704169 Unspecified False   {Unrecognized Metadata, OK} Unhealthy    Unknown
+
+so as before, i tried this command:
+Reset-PhysicalDisk -FriendlyName "ATA WDC WD10EARS-00Y"
+
+this came back with a normal "operational status" - healthy - but the "mediatype" was still "unspecified"
+as before, the status then came back:
+4        ATA WDC WD10EARS-00Y    WD-WCAV55704169 Unspecified True    OK                Healthy      Auto-Select ...1 GB
+
+so as before, I ran this to fix that media type "unspecified"
+Set-PhysicalDisk -FriendlyName "ATA WDC WD10EARS-00Y" -MediaType HDD
+
+this has apparently fixed the status
+I'm going to see if i can change it from "auto-select" to "hotswap"
+
+hypothetically, this should work:
+Set-PhysicalDisk -FriendlyName "ATA WDC WD10EARS-00Y" -usage HotSpare
+
+This appears to have worked without issue
+...and data intact as always
+
+now i'll add the 2TB hitachi and maybe embiggen the disk/partition
+
+
+I'll use this from above..
+$PDToAdd =  Get-PhysicalDisk -FriendlyName "ATA Hitachi HDS5C302"
+Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
+this WORKED immediately and without issue. so i guess good
+so the hitachi is already in the pool and part of the vdisk as far as i can tell
+
+
+i just realized though that disk 4 designated as "hot spare" currently is actually "can pool" true
+and apparently not in the pool and there not part of the vdisk
+so I don't know if I even can though it says can pool true so maybe
+
+so i'll just use the same as above in an attempt to add in the hot spare:
+
+$PDToAdd =  Get-PhysicalDisk -FriendlyName "ATA WDC WD10EARS-00Y"
+Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
+this was successful but now disk 4 says usage is "auto-select"
+so i think flagging it hot spare removed it from the pool
+or the pool just can't have a disk flagged as hotspare
+so i'm gong to reset it back to hotspare
+
+ok i take it back. disk 4 is still in the pool but still flagged as hot spare
+so i just had to add it to the pool at some point /then/ flag as hotspare
+
+
+I'm going to try growing the vdisk/partition to around 3TB
+first
+Resize-VirtualDisk -FriendlyName "Vdisk1" -Size (3TB)
+this didn't work because i had already set this capacity to 50TG
+if i hadn't done that this would have worked. or I could size it to 50.2TB
+ya, i'll do that
+Resize-VirtualDisk -FriendlyName "Vdisk1" -Size (50.2TB)
+yes. works. 
+
+
+assume the vdisk works, i'll try this one
+
+first verify with 
+Get-Partition -DiskNumber 6 -PartitionNumber 2 
+
+Then do the resize:
+
+Resize-Partition -DiskNumber 6 -PartitionNumber 2 -size (3TB)
+
+-----------------------------
+
+I added one of the 8TB drives
+the WD red from 2018 defcon
+appparently the vdisk is now disk 7
+the 8TB being disk 6
+
+I'll just the same as before
+first, add to the pool:
+$PDToAdd =  Get-PhysicalDisk -FriendlyName "ATA WDC WD80EZAZ-11T"
+Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
+
+
+i think it's just available from there so next i'm almost positive is resizing the partition
+lets find out
+have to re-do that get-partition though
+
+Get-Partition -DiskNumber 7 -PartitionNumber 2 
+this confirms
+so now i'll resize:
+Resize-Partition -DiskNumber 7 -PartitionNumber 2 -size (5TB)
+
+
+everything looked right with the pool and everything
+it appeared the 8TB disk was part of it
+but i also see the 8TB disk is D: on the server
+with all the data
+i used server manager to "reset" the disk effecitvely erasing it
+now it's showing the status of the 8 TB as if it took it out:
+DeviceId FriendlyName            SerialNumber    MediaType CanPool OperationalStatus  HealthStatus Usage           Size
+-------- ------------            ------------    --------- ------- -----------------  ------------ -----           ----
+6         ATA WDC WD80EZAZ-11T    1DGYWKZZ        HDD       False   Lost Communication Warning      Auto-Select  7.28 TB
+
+so i'll try the thing from above for drives that actually were physically removed 
+and see if that works
+actually maybe that is possibly all this command does but i'll do it anyway
+Reset-PhysicalDisk -FriendlyName "ATA WDC WD80EZAZ-11T"
+actually this errored out but it still changed the status:
+6        ATA WDC WD80EZAZ-11T    1DGYWKZZ        HDD       False   {Transient Error, OK} Unhealthy    Auto-Select ...TB
+
+
+tried to find a command to fix the operational status of transient error/ok/unhealthy
+so i tried removing:
+Remove-PhysicalDisk -StoragePoolFriendlyName "WinStorePool" -PhysicalDisks (Get-PhysicalDisk -Friendlyname "ATA WDC WD80EZAZ-11T")
+which seems to have gone through without much issue
+now i'll tried adding it back
+
+$PDToAdd = Get-PhysicalDisk -FriendlyName "ATA WDC WD80EZAZ-11T"
+Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
+
+this also was successful
+and the status seems okay now
+operational status "healthy"
+
+
+
+I did re-format the vdisk volume as ReFS. probably does't matter but i did it anyway
+and re-copied over the repo folder for some dummy data
+
+
+the last experiment i can think of is swapping the position of two of the drives to see what happens and 
+figure out if it's possible to recover without losing data
+
+i swapped hdd positions, 0 (non-OS) with 1. it made literally no difference at all, the pool/disk just continuued
+on as if nothing happened.
+
+physical disk layout as of now:
+
+
+PS C:\Users\keith> Get-PhysicalDisk
+
+DeviceId FriendlyName            SerialNumber    MediaType CanPool OperationalStatus HealthStatus Usage            Size
+-------- ------------            ------------    --------- ------- ----------------- ------------ -----            ----
+3        ATA SAMSUNG HD103UJ     S13PJDWQ728900  HDD       False   OK                Healthy      Auto-Select 931.51 GB
+4        ATA WDC WD10EARS-00Y    WD-WCAV55704169 HDD       False   OK                Healthy      Hot Spare   931.51 GB
+0        WDC  WDS500G2B0A-00SM50 191466802592    SSD       False   OK                Healthy      Auto-Select 465.76 GB
+1        ATA Hitachi HDS5C302    MCE7215P0KMLAW  HDD       False   OK                Healthy      Auto-Select   1.82 TB
+5        ATA WDC WD1001FALS-0    WD-WMATV8678792 HDD       False   OK                Healthy      Auto-Select 931.51 GB
+6        ATA WDC WD80EZAZ-11T    1DGYWKZZ        HDD       False   OK                Healthy      Auto-Select   7.28 TB
+2        ATA WDC WD1001FALS-0    WD-WMATV8730079 HDD       False   OK                Healthy      Auto-Select 931.51 GB
+
+
+
+i'm actually not sure parity+hot spare is necessary or required for redunduancy but i'm going to leave it like this for now 
+anyway
+
+
+i think the "friendly name" can actually be set. which since two of them have the same friendly name is probably a good thing to set
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+8:28 PM 9/3/2019
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
