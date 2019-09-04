@@ -697,15 +697,43 @@ i think the "friendly name" can actually be set. which since two of them have th
 
 
 
+-------------------------------------------------------------------------------------------------------------------
+
+9:38 PM 9/3/2019
+
+found the command for changing friendly name
+still not sure how to do this with the two disks with identical friendly names but
+at least i got the command here
+
+sample line
+Set-PhysicalDisk -FriendlyName "PhysicalDisk4" -NewFriendlyName "PhysicalDiskInSlot5"
+
+it took a while but if figured out i think how to identify hard drives that apparently have the same friendly name
 
 
+Since get-physicaldisk can retreive a drive by serial number and this out put can be set to a variable:
+$DiskToChange = Get-PhysicalDisk -SerialNumber WD-WMATV8730079
+
+I took this and used it in a set-physicaldisk command:
+Set-PhysicalDisk -InputObject $DiskToChange -Usage ManualSelect
+
+apparently that was the right kind of InputObject
+
+of coruse all the above does is set the usage to manual select 
+i still need to try the new friendly name part
+
+so i tried exactly that:
+ Set-PhysicalDisk -InputObject $DiskToChange -NewFriendlyName "1TB ID 6"
+
+and what do ya know:
+ DeviceId FriendlyName SerialNumber    MediaType CanPool OperationalStatus HealthStatus Usage            Size
+-------- ------------ ------------    --------- ------- ----------------- ------------ -----            ----
+6        1TB ID 6     WD-WMATV8730079 HDD       False   OK                Healthy      Auto-Select 931.51 GB
 
 
+now i could just use friendlyname/NewFriendlyName to change the other one if i wanted. now that the two have different friendly names
 
-
-
-
-
+i probably shouldn't have mentioned the ID 6 though. I think that refers to the physical slot. so i move it, it could be confusing.
 
 
 
