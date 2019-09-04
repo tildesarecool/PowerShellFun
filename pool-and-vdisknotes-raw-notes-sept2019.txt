@@ -1,8 +1,8 @@
-New-StoragePool –FriendlyName "WinStorePool" –PhysicalDisks (Get-PhysicalDisk PhysicalDisk1, PhysicalDisk2,PhysicalDisk3 ) –StorageSubSystemFriendlyName *Store*
+New-StoragePool ï¿½FriendlyName "WinStorePool" ï¿½PhysicalDisks (Get-PhysicalDisk PhysicalDisk1, PhysicalDisk2,PhysicalDisk3 ) ï¿½StorageSubSystemFriendlyName *Store*
 
 
 
-New-VirtualDisk –StoragePoolFriendlyName "WinStorePool" –FriendlyName VDisk1 –NumberOfColumns 1 –ProvisioningType Fixed –ResiliencySettingName Simple -UseMaximumSize
+New-VirtualDisk ï¿½StoragePoolFriendlyName "WinStorePool" ï¿½FriendlyName VDisk1 ï¿½NumberOfColumns 1 ï¿½ProvisioningType Fixed ï¿½ResiliencySettingName Simple -UseMaximumSize
 
 
 
@@ -85,7 +85,7 @@ i assume this will make it easy
 
 
 original virtual disk line from that blog
-New-VirtualDisk –StoragePoolFriendlyName "WinStorePool" –FriendlyName VDisk1 –NumberOfColumns 1 –ProvisioningType Fixed –ResiliencySettingName Simple -UseMaximumSize -PhysicalDiskRedundancy 1 
+New-VirtualDisk ï¿½StoragePoolFriendlyName "WinStorePool" ï¿½FriendlyName VDisk1 ï¿½NumberOfColumns 1 ï¿½ProvisioningType Fixed ï¿½ResiliencySettingName Simple -UseMaximumSize -PhysicalDiskRedundancy 1 
 
 
 
@@ -708,7 +708,7 @@ i think the "friendly name" can actually be set. which since two of them have th
 
 
 
-8:28 PM 9/3/2019
+
 
 
 
