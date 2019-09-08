@@ -813,6 +813,13 @@ Resize-Partition -DiskNumber 6 -PartitionNumber 2 -size (2.5TB)
 this command did work, note no variable
 Resize-Partition -DiskNumber 9 -PartitionNumber 2 -size (12TB)
 
+I decided to raise it up to 20TB. Just for fun.
+Resize-Partition -DiskNumber 9 -PartitionNumber 2 -size (20TB)
+I also did a test copy of a 4+ gig ISO file and it seemed to max out the network bandwidth
+when i did the inital test it seemed limited to less than 10Mbps
+like it was on wifi or something
+but I reset my modem's firware to default just using the web UI    
+and it seems to be better now. 
 
 
 
