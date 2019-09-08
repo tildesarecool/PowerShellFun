@@ -380,7 +380,7 @@ Set-PhysicalDisk -FriendlyName "ATA SAMSUNG HD103UJ" -MediaType HDD
 i'm going to try adding the disk with PS instead of server manager
 
 
-$PDToAdd =  Get-PhysicalDisk -FriendlyName "ATA SAMSUNG HD103UJ"
+$PDToAdd =  Get-PhysicalDisk -FriendlyName "10TB Slot ID1"
 Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
 
 
@@ -578,6 +578,7 @@ so i'll just use the same as above in an attempt to add in the hot spare:
 
 $PDToAdd =  Get-PhysicalDisk -FriendlyName "ATA WDC WD10EARS-00Y"
 Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
+
 this was successful but now disk 4 says usage is "auto-select"
 so i think flagging it hot spare removed it from the pool
 or the pool just can't have a disk flagged as hotspare
@@ -734,6 +735,120 @@ and what do ya know:
 now i could just use friendlyname/NewFriendlyName to change the other one if i wanted. now that the two have different friendly names
 
 i probably shouldn't have mentioned the ID 6 though. I think that refers to the physical slot. so i move it, it could be confusing.
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+10:30 PM 9/6/2019
+
+i moved the drives int he server down so that the first two - i guess slot 0 and slot 1? - could hold the first two 
+10TB drives
+I then used server manager to delete the existing volumes and reset/initalize the disks
+the two 10TB drives still showed "canpool" as "false" though
+then i had to go so i powered off the server 
+when i powered it back on again the drives showed "true" for "canpool"
+at least i think that's the ordr of the events
+
+the two 10TB drives again had identical "friendly names" however
+
+first i set some new friendly names for the two drives by slot
+
+$PDToAdd =  Get-PhysicalDisk -FriendlyName "10TB Slot ID1"
+$PDToAdd =  Get-PhysicalDisk -FriendlyName "10TB Slot ID2"
+
+then I added each one in turn with the above variable:
+Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
+
+here is current output of a 
+Get-PhysicalDisk:
+
+DeviceId FriendlyName            SerialNumber    MediaType CanPool OperationalStatus HealthStatus Usage            Size
+-------- ------------            ------------    --------- ------- ----------------- ------------ -----            ----
+3        ATA SAMSUNG HD103UJ     S13PJDWQ728900  HDD       False   OK                Healthy      Auto-Select 931.51 GB
+4        ATA WDC WD10EARS-00Y    WD-WCAV55704169 HDD       False   OK                Healthy      Hot Spare   931.51 GB
+2        10TB Slot ID2           JEH8JZYN        HDD       False   OK                Healthy      Auto-Select    9.1 TB
+1        10TB Slot ID1           2YJ3NGWD        HDD       False   OK                Healthy      Auto-Select    9.1 TB
+0        500GB SSD OS            191466802592    SSD       False   OK                Healthy      Auto-Select 465.76 GB
+6        2TB Hitachi             MCE7215P0KMLAW  HDD       False   OK                Healthy      Auto-Select   1.82 TB
+5        1TB SN8792              WD-WMATV8678792 HDD       False   OK                Healthy      Auto-Select 931.51 GB
+8        8TBWD SNWKZZ            1DGYWKZZ        HDD       False   OK                Healthy      Auto-Select   7.28 TB
+7        1TB SN0079              WD-WMATV8730079 HDD       False   OK                Healthy      Auto-Select 931.51 GB
+
+
+i think the next step is probalby "extending" the volume. 
+since i think the virtualdisk is likely still at the 50TB from my experimenting
+
+FriendlyName ResiliencySettingName FaultDomainRedundancy OperationalStatus HealthStatus    Size FootprintOnPool StorageEfficiency
+------------ --------------------- --------------------- ----------------- ------------    ---- --------------- -----------------
+VDisk1       Parity                1                     OK                Healthy      50.2 TB           74 GB            64.86%
+
+
+I'm actually not sure what the StorageEfficiency column is supposed to be indicating
+i assume it's related to ratio of available physical disk space to specified virtual disk size 
+but i actually don't know 
+
+since i've only done volume resizing via server manager up to now i'll try it via PS
+
+
+Resize-Partition -DiskNumber 6 -PartitionNumber 2 -size (2.5TB)
+
+
+Resize-Partition -DiskNumber 9 -PartitionNumber 2 -size (12TB)
+
+
+first, show the volume, S:, and only that:
+Get-Partition -DiskNumber 9 -PartitionNumber 2
+
+then, set to a variable:
+$PartToResize = Get-Partition -DiskNumber 9 -PartitionNumber 2
+now, perhaps we can use resize-partition 
+
+actually that probably isn't necessary
+Resize-Partition -DiskNumber 6 -PartitionNumber 2 -size (2.5TB)
+
+
+
+this command did work, note no variable
+Resize-Partition -DiskNumber 9 -PartitionNumber 2 -size (12TB)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
