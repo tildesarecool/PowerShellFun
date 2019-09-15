@@ -826,21 +826,32 @@ and it seems to be better now.
 
 
 
+-------------------------------------------------------------------------------------------------------------------
+
+13:05 PM 9/14/2019
+
+
+as part of a blog entry i removed disk 3:
+3        ATA SAMSUNG HD103UJ     S13PJDWQ728900  HDD       False   OK                Healthy      Auto-Select 931.51 GB
+
+and replaced it with a 10TB drive which I had already designated as the third one
 
 
 
+I used only this or these commands:
+$PDToRemove = Get-PhysicalDisk -Friendlyname "ATA SAMSUNG HD103UJ"
+Remove-PhysicalDisk -PhysicalDisks $PDToRemove -StoragePoolFriendlyName "WinStorePool"
+
+Not sure if more steps are necessary or not but it seems to have worked
+as far as the health of the pool and the virtualdisk
 
 
+once it was out of the pool i powered down the server, removed the disk and inserted the 10TB 
 
+I ended up removing 3 of the 1TB disks and replacing them with the remaining 10TB drives (x3)
 
-
-
-
-
-
-
-
-
+I kept track in a blog entry instad
+But the basic commands are in these notes.
 
 
 
