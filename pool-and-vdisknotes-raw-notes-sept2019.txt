@@ -685,7 +685,7 @@ DeviceId FriendlyName            SerialNumber    MediaType CanPool OperationalSt
 0        WDC  WDS500G2B0A-00SM50 191466802592    SSD       False   OK                Healthy      Auto-Select 465.76 GB
 1        ATA Hitachi HDS5C302    MCE7215P0KMLAW  HDD       False   OK                Healthy      Auto-Select   1.82 TB
 5        ATA WDC WD1001FALS-0    WD-WMATV8678792 HDD       False   OK                Healthy      Auto-Select 931.51 GB
-6        ATA WDC WD80EZAZ-11T    1DGYWKZZ        HDD       False   OK                Healthy      Auto-Select   7.28 TB
+6        ATA WDC WD80EZAZ-11T    xxx        HDD       False   OK                Healthy      Auto-Select   7.28 TB
 2        ATA WDC WD1001FALS-0    WD-WMATV8730079 HDD       False   OK                Healthy      Auto-Select 931.51 GB
 
 
@@ -768,13 +768,13 @@ DeviceId FriendlyName            SerialNumber    MediaType CanPool OperationalSt
 -------- ------------            ------------    --------- ------- ----------------- ------------ -----            ----
 3        ATA SAMSUNG HD103UJ     S13PJDWQ728900  HDD       False   OK                Healthy      Auto-Select 931.51 GB
 4        ATA WDC WD10EARS-00Y    WD-WCAV55704169 HDD       False   OK                Healthy      Hot Spare   931.51 GB
-2        10TB Slot ID2           JEH8JZYN        HDD       False   OK                Healthy      Auto-Select    9.1 TB
-1        10TB Slot ID1           2YJ3NGWD        HDD       False   OK                Healthy      Auto-Select    9.1 TB
+2        10TB Slot ID2           xxx        HDD       False   OK                Healthy      Auto-Select    9.1 TB
+1        10TB Slot ID1           xxx        HDD       False   OK                Healthy      Auto-Select    9.1 TB
 0        500GB SSD OS            191466802592    SSD       False   OK                Healthy      Auto-Select 465.76 GB
 6        2TB Hitachi             MCE7215P0KMLAW  HDD       False   OK                Healthy      Auto-Select   1.82 TB
 5        1TB SN8792              WD-WMATV8678792 HDD       False   OK                Healthy      Auto-Select 931.51 GB
-8        8TBWD SNWKZZ            1DGYWKZZ        HDD       False   OK                Healthy      Auto-Select   7.28 TB
-7        1TB SN0079              WD-WMATV8730079 HDD       False   OK                Healthy      Auto-Select 931.51 GB
+8        8TBWD SNWKZZ            xxx        HDD       False   OK                Healthy      Auto-Select   7.28 TB
+7        1TB SN0079              WD-xxx HDD       False   OK                Healthy      Auto-Select 931.51 GB
 
 
 i think the next step is probalby "extending" the volume. 
@@ -855,9 +855,62 @@ But the basic commands are in these notes.
 
 
 
+-------------------------------------------------------------------------------------------------------------------
+
+18:00 PM 9/24/2019
+
+I have installed node.js on the 2k19 host OS of the r520
+which also installed chocolatey and few other things 
+version is 12.10.0
+actually took a while
+after reboot I wanted to see if "windows terminal" would install or not 
+and found a page that describes it: 
+https://github.com/microsoft/terminal
+
+with choco install:
+choco install microsoft-windows-terminal
+
+got the error:
+ERROR: This package requires at least Windows 10 version 1903/OS build 18362.x.
+there doesn't seem to be a way - right now - to install terminal on any version of
+windows server
+i had a little hope from this:
+https://github.com/microsoft/terminal/issues/1386
+downloading the appx zip file then downloading the msix file 
+but windowsterminal.exe doesn't run 
+so i tried installing the vc runtime
+https://aka.ms/vs/16/release/vc_redist.x64.exe
+and registering the appmanifest file 
+Add-AppxPackage .\AppxManifest.xml -Register
+but that had a different requirement: 
+C++ Runtime framework packages for Desktop Bridge
+https://support.microsoft.com/en-us/help/3176696/c-runtime-framework-packages-for-desktop-bridge
+so installed /that/ 
+I also edited the xml file to match the version i installed 
+none of it works though. no acknowledgement that it's even installed
 
 
 
+I've been looking up windows demployment services - still not sure if that requires a domain    
+or not   (update: system requirements mention active directory so I think yes, domain required)
+and also something called "boxstarter" (https://boxstarter.org/) 
+"
+Boxstarter leverages Chocolatey packages to automate the installation of software and create 
+repeatable, scripted Windows environments.
+"
+
+which is literally what i've always wanted. or at least most of what i've always wanted 
+
+i was also looking at windows deployment services information
+found a playlist but it's about server 2012/r2:
+https://www.youtube.com/watch?v=OaldxImiPNI&list=PL3wE5r2MTAlRyTxszpsn2tlxnqi8wGgmm&index=2
+
+interesting information 
+first adds role through server manager 
+then does same through powershell prompt 
+
+install feature first:
+install-windowsfeature -name WDS 
 
 
 
