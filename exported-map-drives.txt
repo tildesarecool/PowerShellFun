@@ -1,0 +1,5 @@
+OK           N:        \\marshsoft\software\keith 
+OK           U:        \\fs\users\khole          Microsoft Windows Network
+OK           V:        \\fs\informationservice$  Microsoft Windows Network
+OK           W:        \\fs\orgpub$              Microsoft Windows Network
+OK           Z:        \\marshsoft\software      Microsoft Windows Network
