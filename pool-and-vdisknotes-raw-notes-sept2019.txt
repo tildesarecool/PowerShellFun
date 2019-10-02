@@ -912,18 +912,42 @@ then does same through powershell prompt
 install feature first:
 install-windowsfeature -name WDS 
 
+-------------------------------------------------------------------------------------------------------------------
+
+18:00 PM 10/2/2019
+
+The issue lately has been that the vm - 180 trial server 2019 - has a network adapter
+apparently connected to the virtual switch since it is on the network...
+but the vm seems to have the same IP as the host which seems more like 
+the "NAT" configuration of virtualbox
+
+And before when i looked when i tried to get the name of the virtual nic - 
+not the virtual switch - it would return the name of the virtualswitch
+
+I've tried again though with 
+Get-VMNetworkAdapter -VMName *
+
+the output being:
+
+Name            IsManagementOs VMName                      SwitchName MacAddress   Status IPAddresses
+----            -------------- ------                      ---------- ----------   ------ -----------
+Network Adapter False          Server 2019 (180 day trial)            00155DE0EA00        {}
 
 
+So i guess there is a virtual nic seperate from the virtual switch just called "network adapter"
 
 
+tangentially, 
+Get-VMSwitch
+returns 
+Name            SwitchType NetAdapterInterfaceDescription
+----            ---------- ------------------------------
+ExternalSwitch1 External   Broadcom NetXtreme Gigabit Ethernet
 
 
-
-
-
-
-
-
+I don't think i created the virtualnic at least not through powershell but 
+i may have created the virtual switch or at least named it via 
+the "vm manager" GUI 
 
 
 
