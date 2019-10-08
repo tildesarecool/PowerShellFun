@@ -1019,15 +1019,15 @@ i'll try removing it again
 
 DeviceId FriendlyName            SerialNumber   MediaType CanPool OperationalStatus HealthStatus Usage            Size
 -------- ------------            ------------   --------- ------- ----------------- ------------ -----            ----
-2        10TB Slot ID2           JEH8JZYN       HDD       False   OK                Healthy      Auto-Select    9.1 TB
-1        10TB Slot ID1           2YJ3NGWD       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+2        10TB Slot ID2           xxxxxxxx       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+1        10TB Slot ID1           xxxxxxxx       HDD       False   OK                Healthy      Auto-Select    9.1 TB
 0        WDC  WDS500G2B0A-00SM50 191466802592   SSD       False   OK                Healthy      Auto-Select 465.76 GB
 6        2TB Hitachi             MCE7215P0KMLAW HDD       False   OK                Healthy      Retired       1.82 TB
-8        10TB Slot ID8           1EG4028Z       HDD       False   OK                Healthy      Auto-Select    9.1 TB
-3        10TB Slot ID3           2YJPAL5D       HDD       False   OK                Healthy      Auto-Select    9.1 TB
-7        10TB Slot ID7           1EG5JZGZ       HDD       False   OK                Healthy      Auto-Select    9.1 TB
-4        10TB Slot ID4           2YJS31ND       HDD       False   OK                Healthy      Auto-Select    9.1 TB
-5        10TB Slot ID5           16G6D0HZ       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+8        10TB Slot ID8           xxxxxxxx       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+3        10TB Slot ID3           xxxxxxxx       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+7        10TB Slot ID7           xxxxxxxx       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+4        10TB Slot ID4           xxxxxxxx       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+5        10TB Slot ID5           xxxxxxxx       HDD       False   OK                Healthy      Auto-Select    9.1 TB
 
 
 removal of hitachi:
@@ -1042,7 +1042,17 @@ $DiskToChange = Get-PhysicalDisk -SerialNumber 1EG4UGWZ
 Set-PhysicalDisk -InputObject $DiskToChange -NewFriendlyName "10TB Slot ID6"
 
 
-
+DeviceId FriendlyName            SerialNumber MediaType CanPool OperationalStatus HealthStatus Usage            Size
+-------- ------------            ------------ --------- ------- ----------------- ------------ -----            ----
+6        10TB Slot ID6           xxxxxxxx     HDD       True    OK                Healthy      Auto-Select    9.1 TB
+2        10TB Slot ID2           xxxxxxxx     HDD       False   OK                Healthy      Auto-Select    9.1 TB
+1        10TB Slot ID1           xxxxxxxx     HDD       False   OK                Healthy      Auto-Select    9.1 TB
+0        WDC  WDS500G2B0A-00SM50 191466802592 SSD       False   OK                Healthy      Auto-Select 465.76 GB
+8        10TB Slot ID8           xxxxxxxx     HDD       False   OK                Healthy      Auto-Select    9.1 TB
+3        10TB Slot ID3           xxxxxxxx     HDD       False   OK                Healthy      Auto-Select    9.1 TB
+7        10TB Slot ID7           xxxxxxxx     HDD       False   OK                Healthy      Auto-Select    9.1 TB
+4        10TB Slot ID4           xxxxxxxx     HDD       False   OK                Healthy      Auto-Select    9.1 TB
+5        10TB Slot ID5           xxxxxxxx     HDD       False   OK                Healthy      Auto-Select    9.1 TB
 
 
 
