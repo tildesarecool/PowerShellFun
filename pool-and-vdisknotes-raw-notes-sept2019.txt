@@ -952,17 +952,94 @@ the "vm manager" GUI
 
 
 
+-------------------------------------------------------------------------------------------------------------------
+
+21:52  10/7/2019
+
+since i bought 3 new 10TB drives from bb, I am inserting them into the server 
+not sure if i can remove all the non-10TB drives at once or if i really have to do them 
+one by one 
+but I guess I'll find out 
+so first command:
+
+Remove-PhysicalDisk -StoragePoolFriendlyName "WinStorePool" -PhysicalDisks (Get-PhysicalDisk -Friendlyname "1TB SN0079")
+
+this was for the 1TB drive and this was successful
+
+next is the 8TB drive 
+Remove-PhysicalDisk -StoragePoolFriendlyName "WinStorePool" -PhysicalDisks (Get-PhysicalDisk -Friendlyname "8TBWD SNWKZZ")
+
+this is the 8TB. probably obvious. this also is good so far
 
 
 
+last is the 2TB, 2TB Hitachi
+
+Apparently it found the limit of what it will tolerate as it did not let me remove the hitachi
+so i'll power down and insert 2x10TB to add to array
+
+error info:
+Remove-PhysicalDisk : One or more physical disks could not be removed because they are still in use.
+
+Extended information:
+The storage pool could not relocate data from one or more physical disks.
 
 
+per usual the two 10TB drives have the same friendly name so I'll use the command as before:
+
+first one: 
+$DiskToChange = Get-PhysicalDisk -SerialNumber 1EG5JZGZ
+Set-PhysicalDisk -InputObject $DiskToChange -NewFriendlyName "10TB Slot ID7"
 
 
+second one:
+$DiskToChange = Get-PhysicalDisk -SerialNumber 1EG4028Z
+Set-PhysicalDisk -InputObject $DiskToChange -NewFriendlyName "10TB Slot ID8"
 
 
+now that they have different friendly names, I need to add them to the pool and vdisk 
 
 
+starting with 7:
+
+$PDToAdd =  Get-PhysicalDisk -FriendlyName "10TB Slot ID7"
+Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
+
+now same with 8:
+
+$PDToAdd =  Get-PhysicalDisk -FriendlyName "10TB Slot ID8"
+Add-PhysicalDisk -PhysicalDisks $PDToAdd -Usage AutoSelect -StoragePoolFriendlyName WinStorePool
+
+
+both of these apparently got added no problem (see below)
+the hitachi is "retired" for some reason, not sure why
+
+i'll try removing it again
+
+
+DeviceId FriendlyName            SerialNumber   MediaType CanPool OperationalStatus HealthStatus Usage            Size
+-------- ------------            ------------   --------- ------- ----------------- ------------ -----            ----
+2        10TB Slot ID2           JEH8JZYN       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+1        10TB Slot ID1           2YJ3NGWD       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+0        WDC  WDS500G2B0A-00SM50 191466802592   SSD       False   OK                Healthy      Auto-Select 465.76 GB
+6        2TB Hitachi             MCE7215P0KMLAW HDD       False   OK                Healthy      Retired       1.82 TB
+8        10TB Slot ID8           1EG4028Z       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+3        10TB Slot ID3           2YJPAL5D       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+7        10TB Slot ID7           1EG5JZGZ       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+4        10TB Slot ID4           2YJS31ND       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+5        10TB Slot ID5           16G6D0HZ       HDD       False   OK                Healthy      Auto-Select    9.1 TB
+
+
+removal of hitachi:
+Remove-PhysicalDisk -StoragePoolFriendlyName "WinStorePool" -PhysicalDisks (Get-PhysicalDisk -Friendlyname "2TB Hitachi")
+
+went through this time
+
+powered off
+removed 2TB, inserted 10TB 
+same lines as before
+$DiskToChange = Get-PhysicalDisk -SerialNumber 1EG4UGWZ
+Set-PhysicalDisk -InputObject $DiskToChange -NewFriendlyName "10TB Slot ID6"
 
 
 
