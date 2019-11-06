@@ -1054,6 +1054,332 @@ DeviceId FriendlyName            SerialNumber MediaType CanPool OperationalStatu
 4        10TB Slot ID4           xxxxxxxx     HDD       False   OK                Healthy      Auto-Select    9.1 TB
 5        10TB Slot ID5           xxxxxxxx     HDD       False   OK                Healthy      Auto-Select    9.1 TB
 
+-------------------------------------------------------------------------------------------------------------------
+
+below is the quote-unquote benchmarking i did on the file server
+probably no security impliciatons to the information 
+so i'm combinining with this filewhich is what i should have done to begin with 
+
+
+-----------------------------------------------------------
+
+
+test 0
+11:23 PM 11/1/2019
+something of a "control group" test
+on "galacticagamer7" - the sager - win 7x64 w/16 gig ram as host
+using virtualbox
+installing win 10 pro auto-install
+just a regular spindle hard drive - the S: drive - NTFS w/default sector size
+dynamic virtual disk
+connected to IDE controller in VM
+VM has 8000MBs of RAM
+using
+ISO: S:\win10_19h1_(may2019)_x64-[prodkey-skip-edition-skip-via-name].iso
+started timer at the "push any key to boot" prompt - 11:23 PM 11/1/2019
+
+decided to use "usable desktop" as the stopping point. after logging in to profile
+total time: 
+19min
+that's it
+
+
+---------------------------------------------------------------------------------
+hyper-v virtual machines "benchmarking"
+test 1
+9:47 PM 10/31/2019
+leaving attached VHDX file
+s:\Hyper-V\VHDs\win7vm.vhdx
+that is set to dynamic size
+connected to IDE controller in VM
+stored on the s: drive (storage array) (ReFS w/super large sector size)
+installing win 10 pro auto-install
+VM has 8 gig ram
+ISO: S:\win10_19h1_(may2019)_x64-[prodkey-skip-edition-skip-via-name].iso
+started timer at the "push any key to boot" prompt - 9:50 PM 10/31/2019
+current vidsk capacity - as reported by host OS in "this pc" - is 24.7TB
+
+decided to use "usable desktop" as the stopping point. after logging in to profile
+total time: 
+1hour
+3min
+28sec
+
+---------------------------------------------------------------------------------
+
+test 2: using vhd file
+10:58 PM 10/31/2019
+s:\Hyper-V\VHDs\win7vm.vhd
+that is set to dynamic size
+connected to IDE controller in VM
+stored on the s: drive (storage array) (ReFS w/super large sector size)
+installing win 10 pro auto-install
+VM has 8 gig ram
+ISO: S:\win10_19h1_(may2019)_x64-[prodkey-skip-edition-skip-via-name].iso
+started timer at the "push any key to boot" prompt: 11:00 PM 10/31/2019
+current vidsk capacity - as reported by host OS in "this pc" - is 24.7TB
+
+decided to use "usable desktop" as the stopping point. after logging in to profile
+total time: 
+1hour
+6min
+00sec
+
+---------------------------------------------------------------------------------
+
+test 3: VHDX file fixed size (200gig)
+10:50 AM 11/1/2019
+S:\hyper-v\vhds\Win10x64-1903-fixed-size.vhdx
+static sized
+connected to IDE controller in VM
+stored on the s: drive (storage array) (ReFS w/super large sector size)
+installing win 10 pro auto-install
+VM has 8 gig ram
+ISO: S:\win10_19h1_(may2019)_x64-[prodkey-skip-edition-skip-via-name].iso
+started timer at the "push any key to boot" prompt: 10:51 AM 11/1/2019
+current vidsk capacity - as reported by host OS in "this pc" - is 24.7TB
+
+decided to use "usable desktop" as the stopping point. after logging in to profile
+total time: 
+1hour
+2min
+12sec
+
+
+---------------------------------------------------------------------------------
+
+12:45 PM 11/2/2019
+I decided to resize the capacity to closer match the actual capacity across all the disk
+Not sure why this would really fix it but
+maybe it's not using that many disks across only 24.7TB versus all 10
+in server manager when i look at storage pools it says the capctiy is 72.8TB
+and on the server itself when i run
+get-virtualdisk
+it says size is 58TB
+so that's just the difference between the volume/partition size and the size of the virtual disk
+so i'm going to reise the vdisk size to 72TB
+then up the volume/partition size for the same
+and try the benchmark again this time only with a fixed size VHDX
+
+resized vdisk with 
+Resize-VirtualDisk -FriendlyName "Vdisk1" -Size (72.9TB)
+which was successful
+
+
+Then after using 
+Get-Partition -DiskNumber 9
+to confirm which partition is s:
+I used command 
+Resize-Partition -DiskNumber 9 -PartitionNumber 2 -size (72TB)
+which was also successful
+
+
+I confirmed the 72TB capacity with the same get-prition and get-volume
+
+
+I then ran
+Optimize-StoragePool WinStorePool
+for no particular reason, just seemed like a good idea
+i think it's the equivalent of defragmenting. 
+or it's just for re-sorting out where data is stored on the different disks
+i'm actually not sure
+I'll just run defrag s: separately
+and also reboot the host OS
+
+after that I am ready for another benchmark
+
+
+---------------------------------------------------------------------------------
+
+test 4: VHDX file fixed size (200gig)
+1:02 PM 11/2/2019
+S:\hyper-v\vhds\Win10x64-1903-fixed-size.vhdx
+static sized
+connected to IDE controller in VM
+stored on the s: drive (storage array) (ReFS w/super large sector size)
+installing win 10 pro auto-install
+VM has 8 gig ram
+ISO: S:\win10_19h1_(may2019)_x64-[prodkey-skip-edition-skip-via-name].iso
+started timer at the "push any key to boot" prompt: 1:02 PM 11/2/2019
+current vidsk capacity - as reported by host OS in "this pc" - is 72TB
+
+decided to use "usable desktop" as the stopping point. after logging in to profile
+first setup autoreboot at exactly 30 min mark
+second setup autoreboot after "getting ready" at 44 min mark
+first sign in screen show up 55 min
+total time: 
+1hour
+00min
+56sec
+
+
+
+---------------------------------------------------------------------------------
+
+wanted to try scsi controller instead of ide. probably no difference but what not
+installer wouldn't continue with the scsi controller
+kept erroring out at the partition creation phase
+so i'm going to use a different ISO, switch back to IDE controller
+and also load the ISO from the SSD C: drive instead
+which is really what i should have done
+hopefully not reading and writing from same place will produce a little better result
+
+
+
+test 5: VHDX file fixed size (200gig)
+2:55 PM 11/2/2019
+S:\hyper-v\vhds\Win10x64-1903-fixed-size.vhdx
+static sized
+connected to IDE controller in VM
+stored on the s: drive (storage array) (ReFS w/super large sector size)
+installing win 10 pro auto-install
+VM has 8 gig ram
+ISO: 
+started timer at the "push any key to boot" prompt: 3:02 PM 11/2/2019
+current vidsk capacity - as reported by host OS in "this pc" - is 72TB
+C:\install\Win10_19H1_(may2019)_x64-[prodkey-skip-edition-skip-via-name-reattempt].iso
+
+i breifly turned on "disk metrics" via WAC
+
+looks like write transfer rate is between 3 and 12.5MB/s
+seems all over the place
+
+decided to use "usable desktop" as the stopping point. after logging in to profile
+first setup autoreboot at 30 min mark
+second setup autoreboot after "getting ready" at 
+first sign in screen shows up 
+total time: (stopped before done)
+
+
+this is definitely not going any faster than before
+first reboot at exact same time as before
+i think it's time to switch over to NTFS
+see if it helps or not
+no reason to continue test 5
+
+---------------------------------------------------------------------------------
+3:49 PM 11/2/2019
+
+in settings JUST for the VM:
+
+under the network card/switch
+"hardware acceeleration"
+i disabled "virtual machine queue"
+which may or may not have some issues with broadcom chipsets
+or have any affect on install time for that matter
+but i'm disabling it anyway
+
+
+
+made changes to win 10 vm:
+under memory 
+ram already set to 8gig (8192MBs)
+i turned on "dynamic memory"
+with min ram 
+4096
+max ram
+1048576
+
+under "integration services"
+i unchecked ALL the boxes
+
+i set "memory buffer" up from 25% to 33%
+and "memory weight" slider from middle all the way to right or "high"
+i increased the number of virtual processors from 1 to 2
+
+
+in "hyper-v" settings (no vm settigns) i turned off "allow vms to span physical numa nodes"
+
+---------------------------------------------------------------------------------
+
+
+
+test 6: VHDX file fixed size (200gig)
+3:49 PM 11/2/2019
+S:\hyper-v\vhds\Win10x64-1903-fixed-size.vhdx
+static sized
+connected to IDE controller in VM
+stored on the s: drive (storage array) (ReFS w/super large sector size)
+installing win 10 pro auto-install
+VM has 8 gig ram
+ISO: C:\install\Win10_19H1_(may2019)_x64-[prodkey-skip-edition-skip-via-name-reattempt].iso
+started timer at the "push any key to boot" prompt: 3:58 PM 11/2/2019
+current vidsk capacity - as reported by host OS in "this pc" - is 72TB
+S:\hyper-v\vhds\win10x64-1903-fixed-size.vhdx
+
+decided to use "usable desktop" as the stopping point. after logging in to profile
+first setup autoreboot at 
+second setup autoreboot after "getting ready" at 
+first sign in screen shows up 59:30
+total time: 
+1hour
+4min
+9sec
+
+
+
+I was reading this article:
+https://www.vembu.com/hyper-v-cluster-configuration-performance-and-security-whitepaper/
+and it's actually talking aobut something a little different
+but it does say:
+"It is not supported to have a RAID controller card or SAN storage. HBA cards must be configured in pass-through mode"
+with a helpful diagram
+the 10tb drives are showing up as "RAID" type drives
+so i'm starting to wonder if i missed a setting some place in uefi/bios
+or maybe i just need legacy instead of uefi
+i'm starting to wonder
+---------------------------------------------------------------------------------
+8:10 PM 11/2/2019
+
+I saw in WAC that realtime defender was enabled on host OS
+so i thought maybe I disable that and it help with the VMs
+this article talks about that:
+https://www.thomasmaurer.ch/2016/07/how-to-disable-and-configure-windows-defender-on-windows-server-2016-using-powershell/
+spefically it mentions this PS line:
+Set-MpPreference -DisableRealtimeMonitoring $true
+
+but the comment section mentions this DISM line and follows with an OS reboot:
+Dism /online /Disable-Feature /FeatureName:Windows-Defender /Remove /NoRestart /quiet
+
+
+So I did both
+and WAC does report realtime defender being off
+
+
+i'm going to do another test
+not for the whole hour
+just a quick one
+i'll be able to tell inside of 15 min
+8:17 PM 11/2/2019
+
+no difference at all. in fact it took more than an hour
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
