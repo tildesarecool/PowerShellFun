@@ -1355,11 +1355,57 @@ i'll be able to tell inside of 15 min
 no difference at all. in fact it took more than an hour
 
 
+-------------------------------------------------------------------------------------------------------------------
+11/5/2019
+
+I have replaced the SSd with the 250 gig from the ISO enclosure thing
+although i'm going to have trouble booting the server for the new os now that i think about it
+but it's fine 
+
+I'm gong to go through bios and change somet things
+like back to legacy bios for instance 
+
+System BIOS: boot settings: boot mode changed from UEFI to bios 
+
+saved changes/rebooted
+
+in 
+system bios: integrated devices, changed the 
+"i/oat dma engine" 
+from disabled to enabled 
+
+that's it for bios settings...
+
+went into "device settings"
+
+in "device settings there's only 
+"integrated raid controller: dell perc <perc h310 mini> config utility
+and the two embedded NICs config 
+
+in per config utility there is:
+controller Management
+under this there is various clear config/save events/clear events /save debug log/conver to raid capable
+and of of course "change controller properties"
+in "change controller properties"
+there's a "allow replace member with revertible hot spare"
+but since the OS is handling the pool i'm going to set that disabled
+
+"allow replace member with revertible hot spare" = disabled 
+
+there is also "patrol read mode" which i'm sure what it does. actually i think it periodically scans and resolves
+possible problems with physical disks. I got from the dell site though that it only does this on virtual disks 
+configured the with PERC card so i should't have to worry about it
+so i'm going to disable the option 
 
 
 
 
-
+virtual disk management 
+  no settings of interest
+physical disk maangement 
+  no settings of interest
+enclosure management 
+  no settings of interest
 
 
 
