@@ -1,8 +1,8 @@
-New-StoragePool �FriendlyName "WinStorePool" �PhysicalDisks (Get-PhysicalDisk PhysicalDisk1, PhysicalDisk2,PhysicalDisk3 ) �StorageSubSystemFriendlyName *Store*
+New-StoragePool FriendlyName "WinStorePool" PhysicalDisks (Get-PhysicalDisk PhysicalDisk1, PhysicalDisk2,PhysicalDisk3 ) StorageSubSystemFriendlyName *Store*
 
 
 
-New-VirtualDisk �StoragePoolFriendlyName "WinStorePool" �FriendlyName VDisk1 �NumberOfColumns 1 �ProvisioningType Fixed �ResiliencySettingName Simple -UseMaximumSize
+New-VirtualDisk StoragePoolFriendlyName "WinStorePool" FriendlyName VDisk1 NumberOfColumns 1 ProvisioningType Fixed ResiliencySettingName Simple -UseMaximumSize
 
  
 
