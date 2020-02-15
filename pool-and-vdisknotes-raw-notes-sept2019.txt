@@ -4,7 +4,7 @@ New-StoragePool �FriendlyName "WinStorePool" �PhysicalDisks (Get-PhysicalDis
 
 New-VirtualDisk �StoragePoolFriendlyName "WinStorePool" �FriendlyName VDisk1 �NumberOfColumns 1 �ProvisioningType Fixed �ResiliencySettingName Simple -UseMaximumSize
 
-
+ 
 
 https://docs.microsoft.com/en-us/powershell/module/storage/new-storagepool?view=win10-ps
 This line creates a new storage pool using the $PhysicalDisks variable to specify the disks to include from the WindowsStorage subsystem (specified with a wildcard * to remove the need to modify the friendly name for different computers).
