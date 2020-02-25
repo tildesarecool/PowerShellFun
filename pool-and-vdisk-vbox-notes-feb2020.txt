@@ -1,0 +1,9 @@
+Feb 25 2020
+
+I decided to start over with a virtual machine instead of the physical
+server
+I have loaded up virtualbox and installed hyper-v 2019
+I still have to connect the VM up with hyper-v manager
+and add a bunch more virtual disks
+before i can finally start using it to try creating vdisks and pools
+with variable column numbers specified
