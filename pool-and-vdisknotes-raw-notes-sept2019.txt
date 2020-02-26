@@ -85,7 +85,7 @@ i assume this will make it easy
 
 
 original virtual disk line from that blog
-New-VirtualDisk �StoragePoolFriendlyName "WinStorePool" �FriendlyName VDisk1 �NumberOfColumns 1 �ProvisioningType Fixed �ResiliencySettingName Simple -UseMaximumSize -PhysicalDiskRedundancy 1 
+New-VirtualDisk �StoragePoolFriendlyName "WinStorePool" FriendlyName VDisk1 NumberOfColumns 1 ProvisioningType Fixed ResiliencySettingName Simple -UseMaximumSize -PhysicalDiskRedundancy 1 
 
 
 

@@ -7,3 +7,15 @@ I still have to connect the VM up with hyper-v manager
 and add a bunch more virtual disks
 before i can finally start using it to try creating vdisks and pools
 with variable column numbers specified
+
+I made a 250 gig vdi for the boot drive
+then 5x500gig for the storage devices
+I went thorugh using the same two lines 
+
+$DiskToChange = Get-PhysicalDisk -SerialNumber VBxxxxxxx
+Set-PhysicalDisk -InputObject $DiskToChange -NewFriendlyName "idx"
+
+to set the "friendly name" to the id number of each disk, 1 - 5
+
+I then set out to try and enable RDP so make it easier to copy/paste from window to window 
+
