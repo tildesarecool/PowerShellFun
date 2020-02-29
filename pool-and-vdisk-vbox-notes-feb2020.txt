@@ -19,3 +19,66 @@ to set the "friendly name" to the id number of each disk, 1 - 5
 
 I then set out to try and enable RDP so make it easier to copy/paste from window to window 
 
+February 29th 2020
+
+I installed WAC on the alienware but I couldn't seem to connect with it
+then I realized my "keith" account was using a different password that I expected
+So I'll have to udpate that and re-do the autologin and also update the custom 
+unattend.xml file 
+I have enabled the vbox extensions and installed "guest additions" in the windows OS in an attempt
+to be able to copy/paste back and forth. Not sure it's worked. RDP will fix that.
+To my surprise I was able to bring up the C$ share without any problems
+
+I think this ISO I'm using is the previous version of Hyper-V 2019
+as it still has the apparent RDP bug that makes it more difficult to connect
+according to the site
+https://wiki.chotaire.net/windows-hyperv-2019-fix-rdp
+this is a bug that was fixed in the july 2019 release of hyper-v 2019
+but the patch to fix the issue is also linked:
+windows10.0-kb4493509-x64_ec069505eddfb9175e376b7eea773182d06033f0.msu
+found at 
+http://download.windowsupdate.com/d/msdownload/update/software/secu/2019/04/windows10.0-kb4493509-x64_ec069505eddfb9175e376b7eea773182d06033f0.msu
+
+per the site, I ran the command
+Wusa windows10.0-kb4493509-x64_ec069505eddfb9175e376b7eea773182d06033f0.msu
+and it apparently installed successfully and I rebooted when prompted
+
+I then ran the next command in the article.
+I have actually been running everything via PS for the shell history
+so I made one minor modifiection of cmd /c 
+enable RDP:
+cmd / c cscript %windir%\system32\scregedit.wsf /ar 0
+
+verify RDP setting:
+cmd /c cscript %windir%\system32\scregedit.wsf /ar /v
+
+(it didn't work without the cmd /c part)
+
+next i wanted to reset the password but maintain autologon
+I used the 
+net user command to update:
+net user keith (pw here) /expires:never
+to set a new pw
+The unattend.xml I used specified the pw and it says plaintext=true
+but when I searched the registry for that string nothing came back 
+so I'm not sure where that pw is stored 
+but I know autologon can be setup with user name and pw in registry location
+Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+So I am going to create a DefaultPassword (string) entry there and hope for the best
+And the command also sets the pw to never expire. Finally. 
+AutoAdminLogon is already there and present so hypothetically this should just work 
+
+note that the 
+net user
+command also has a /workstations option
+if you use it with an * it's supposed to allow login from any PC:
+/WORKSTATIONS:{computername[,...] | *}
+                              Lists as many as eight computers from
+                              which a user can log on to the network. If
+                              /WORKSTATIONS has no list or if the list is *,
+                              the user can log on from any computer.
+                    
+So I ran this:
+net user keith /workstations:*
+I'm hoping this helps
+
