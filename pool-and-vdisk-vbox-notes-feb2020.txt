@@ -135,6 +135,16 @@ the theory being if one of the four disks fail that fifth disk will take its pla
 So:
 New-VirtualDisk -StoragePoolFriendlyName "WinStorePool" -FriendlyName VDisk1 -NumberOfColumns 4 -ProvisioningType Fixed -ResiliencySettingName Simple -UseMaximumSize
 
+this worked, i was forgetting the dashes
+I then initialized the virtual disk:
+Initialize-Disk -VirtualDisk (Get-VirtualDisk -FriendlyName VDisk1)
+
+next is createing a new partition:
+New-Partition -DiskNumber 6 -UseMaximumSize -AssignDriveLetter
+
+and format:
+
+
 
 New-VirtualDisk StoragePoolFriendlyName "WinStorePool" FriendlyName VDisk1 NumberOfColumns 4 ProvisioningType Fixed ResiliencySettingName Simple -UseMaximumSize
 New-VirtualDisk FriendlyName VDisk1 NumberOfColumns 4 ProvisioningType Fixed ResiliencySettingName Simple -UseMaximumSize
